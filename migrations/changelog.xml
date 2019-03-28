@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        logicalFilePath="changelog.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <include file="changesets/00_createClient.xml" relativeToChangelogFile="true"/>
+    <changeSet author="kkovale@softserveinc.com" id="version_bump_1.0.0">
+        <tagDatabase tag="version_1.0.0"/>
+    </changeSet>
+
+    <include file="changesets/01_createParselType.xml" relativeToChangelogFile="true"/>
+    <changeSet author="kkovale@softserveinc.com" id="version_bump_1.0.1">
+        <tagDatabase tag="version_1.0.1"/>
+    </changeSet>
+
+    <include file="changesets/02_createStorage.xml" relativeToChangelogFile="true"/>
+    <changeSet author="kkovale@softserveinc.com" id="version_bump_1.0.2">
+        <tagDatabase tag="version_1.0.2"/>
+    </changeSet>
+
+    <include file="changesets/03_createSupply.xml" relativeToChangelogFile="true"/>
+    <changeSet author="kkovale@softserveinc.com" id="version_bump_1.0.3">
+        <tagDatabase tag="version_1.0.3"/>
+    </changeSet>
+
+    <include file="changesets/04_createParsel.xml" relativeToChangelogFile="true"/>
+    <changeSet author="kkovale@softserveinc.com" id="version_bump_1.0.4">
+        <tagDatabase tag="version_1.0.4"/>
+    </changeSet>
+
+</databaseChangeLog>

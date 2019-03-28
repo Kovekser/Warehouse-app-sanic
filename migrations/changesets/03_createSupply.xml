@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        logicalFilePath="changesets/createSupply.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet author="kkovale@softserveinc.com" id="create_table_supply">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists schemaName="public" tableName="supply"/>
+            </not>
+        </preConditions>
+        <createTable tableName="supply">
+            <column name="supply_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="from_storage" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="to_storage" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="CHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="client_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="send_date" type="CHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="received_date" type="CHAR">
+                <constraints nullable="false"/>
+            </column>          
+        </createTable>
+        <addPrimaryKey columnNames="supply_id" tableName="supply"/>
+        <addForeignKeyConstraint baseColumnNames="client_id"
+                                 baseTableName="supply"
+                                 constraintName="client_id_fk"
+                                 deferrable="false"
+                                 initiallyDeferred="false"
+                                 onDelete="CASCADE"
+                                 onUpdate="NO ACTION"
+                                 referencedColumnNames="client_id"
+                                 referencedTableName="clients"/>
+
+        <addForeignKeyConstraint baseColumnNames="from_storage"
+                                 baseTableName="supply"
+                                 constraintName="from_storage_fk"
+                                 deferrable="false"
+                                 initiallyDeferred="false"
+                                 onDelete="CASCADE"
+                                 onUpdate="NO ACTION"
+                                 referencedColumnNames="storage_id"
+                                 referencedTableName="storage"/>
+
+        <addForeignKeyConstraint baseColumnNames="to_storage"
+                                 baseTableName="supply"
+                                 constraintName="to_storage_fk"
+                                 deferrable="false"
+                                 initiallyDeferred="false"
+                                 onDelete="CASCADE"
+                                 onUpdate="NO ACTION"
+                                 referencedColumnNames="storage_id"
+                                 referencedTableName="storage"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        logicalFilePath="changesets/createParselType.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet author="kkovale@softserveinc.com" id="create_table_parseltype">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists schemaName="public" tableName="parseltype"/>
+            </not>
+        </preConditions>
+        <createTable tableName="parseltype">
+            <column name="type_id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="type_name" type="CHAR">
+                <constraints nullable="false"/>
+            </column>           
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
