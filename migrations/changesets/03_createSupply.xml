@@ -26,10 +26,10 @@
             <column name="client_id" type="UUID">
                 <constraints nullable="false"/>
             </column>
-            <column name="send_date" type="CHAR">
+            <column name="send_date" type="TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
-            <column name="received_date" type="CHAR">
+            <column name="received_date" type="TIMESTAMP">
                 <constraints nullable="false"/>
             </column>          
         </createTable>
