@@ -6,27 +6,27 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <include file="changesets/00_createClient.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/00_create_client.xml" relativeToChangelogFile="true"/>
     <changeSet author="kkovale@softserveinc.com" id="version_bump_1.0.0">
         <tagDatabase tag="version_1.0.0"/>
     </changeSet>
 
-    <include file="changesets/01_createParselType.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/01_create_parsel_type.xml" relativeToChangelogFile="true"/>
     <changeSet author="kkovale@softserveinc.com" id="version_bump_1.0.1">
         <tagDatabase tag="version_1.0.1"/>
     </changeSet>
 
-    <include file="changesets/02_createStorage.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/02_create_storage.xml" relativeToChangelogFile="true"/>
     <changeSet author="kkovale@softserveinc.com" id="version_bump_1.0.2">
         <tagDatabase tag="version_1.0.2"/>
     </changeSet>
 
-    <include file="changesets/03_createSupply.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/03_create_supply.xml" relativeToChangelogFile="true"/>
     <changeSet author="kkovale@softserveinc.com" id="version_bump_1.0.3">
         <tagDatabase tag="version_1.0.3"/>
     </changeSet>
 
-    <include file="changesets/04_createParsel.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/04_create_parsel.xml" relativeToChangelogFile="true"/>
     <changeSet author="kkovale@softserveinc.com" id="version_bump_1.0.4">
         <tagDatabase tag="version_1.0.4"/>
     </changeSet>

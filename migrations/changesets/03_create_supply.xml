@@ -11,7 +11,7 @@
             </not>
         </preConditions>
         <createTable tableName="supply">
-            <column name="supply_id" type="UUID">
+            <column name="id" type="UUID">
                 <constraints nullable="false"/>
             </column>
             <column name="from_storage" type="UUID">
@@ -20,20 +20,20 @@
             <column name="to_storage" type="UUID">
                 <constraints nullable="false"/>
             </column>
-            <column name="status" type="CHAR">
+            <column name="status" type="TEXT">
                 <constraints nullable="false"/>
             </column>
             <column name="client_id" type="UUID">
                 <constraints nullable="false"/>
             </column>
-            <column name="send_date" type="CHAR">
+            <column name="send_date" type="TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
-            <column name="received_date" type="CHAR">
+            <column name="received_date" type="TIMESTAMP">
                 <constraints nullable="false"/>
             </column>          
         </createTable>
-        <addPrimaryKey columnNames="supply_id" tableName="supply"/>
+        <addPrimaryKey columnNames="id" tableName="supply"/>
         <addForeignKeyConstraint baseColumnNames="client_id"
                                  baseTableName="supply"
                                  constraintName="client_id_fk"
@@ -41,7 +41,7 @@
                                  initiallyDeferred="false"
                                  onDelete="CASCADE"
                                  onUpdate="NO ACTION"
-                                 referencedColumnNames="client_id"
+                                 referencedColumnNames="id"
                                  referencedTableName="clients"/>
 
         <addForeignKeyConstraint baseColumnNames="from_storage"
@@ -51,7 +51,7 @@
                                  initiallyDeferred="false"
                                  onDelete="CASCADE"
                                  onUpdate="NO ACTION"
-                                 referencedColumnNames="storage_id"
+                                 referencedColumnNames="id"
                                  referencedTableName="storage"/>
 
         <addForeignKeyConstraint baseColumnNames="to_storage"
@@ -61,7 +61,7 @@
                                  initiallyDeferred="false"
                                  onDelete="CASCADE"
                                  onUpdate="NO ACTION"
-                                 referencedColumnNames="storage_id"
+                                 referencedColumnNames="id"
                                  referencedTableName="storage"/>
     </changeSet>
 

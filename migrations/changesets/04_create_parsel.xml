@@ -11,26 +11,26 @@
             </not>
         </preConditions>
         <createTable tableName="parsel">
-            <column name="pars_id" type="UUID">
+            <column name="id" type="UUID">
                 <constraints nullable="false"/>
             </column>
-            <column name="description" type="CHAR">
+            <column name="description" type="TEXT">
                 <constraints nullable="false"/>
             </column>
             <column name="type_id" type="UUID">
                 <constraints nullable="false"/>
             </column>
-            <column name="weight" type="SMALLINT">
+            <column name="weight" type="DECIMAL">
                 <constraints nullable="false"/>
             </column>
-            <column name="cost" type="SMALLINT">
+            <column name="cost" type="DECIMAL">
                 <constraints nullable="false"/>
             </column>
             <column name="supply_id" type="UUID">
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <addPrimaryKey columnNames="pars_id" tableName="parsel"/>
+        <addPrimaryKey columnNames="id" tableName="parsel"/>
         <addForeignKeyConstraint baseColumnNames="supply_id"
                                  baseTableName="parsel"
                                  constraintName="supply_id_fk"
@@ -38,7 +38,7 @@
                                  initiallyDeferred="false"
                                  onDelete="CASCADE"
                                  onUpdate="NO ACTION"
-                                 referencedColumnNames="supply_id"
+                                 referencedColumnNames="id"
                                  referencedTableName="supply"/>
         <addForeignKeyConstraint baseColumnNames="type_id"
                                  baseTableName="parsel"
@@ -47,7 +47,7 @@
                                  initiallyDeferred="false"
                                  onDelete="CASCADE"
                                  onUpdate="NO ACTION"
-                                 referencedColumnNames="type_id"
+                                 referencedColumnNames="id"
                                  referencedTableName="parseltype"/>
     </changeSet>
 

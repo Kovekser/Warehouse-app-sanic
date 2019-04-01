@@ -11,13 +11,14 @@
             </not>
         </preConditions>
         <createTable tableName="parseltype">
-            <column name="type_id" type="UUID">
-                <constraints primaryKey="true" nullable="false"/>
+            <column name="id" type="UUID">
+                <constraints nullable="false"/>
             </column>
-            <column name="type_name" type="CHAR">
+            <column name="type_name" type="TEXT">
                 <constraints nullable="false"/>
             </column>           
         </createTable>
+        <addPrimaryKey columnNames="id" tableName="parseltype"/>
     </changeSet>
 
 </databaseChangeLog>
