@@ -23,7 +23,7 @@
             <column name="weight" type="SMALLINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="cost" type="SMALLINT">
+            <column name="cost" type="DECIMAL">
                 <constraints nullable="false"/>
             </column>
             <column name="supply_id" type="UUID">
