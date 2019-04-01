@@ -4,11 +4,10 @@ test:
 
 
 .PHONY: setup
-venv:
+setup:
 	sudo pip3 install virtualenv
 	virtualenv -p python3.7 venv
 	pip install –r requirements/requirements.txt
-
 
 
 .PHONY: liq_migrate
