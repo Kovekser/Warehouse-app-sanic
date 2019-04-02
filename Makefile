@@ -5,10 +5,9 @@ test:
 
 .PHONY: setup
 setup:
-	sudo pip install virtualenv
-	virtualenv -p python3.7 venv
-	pip install -r requirements/requirements.txt
-
+	sudo pip3 install virtualenv; \
+	virtualenv -p python3.7 --always-copy --system-site-packages venv; \
+	. venv/bin/activate; pip3 install -r requirements/requirements.txt
 
 
 .PHONY: liq_migrate
@@ -20,6 +19,11 @@ liq_migrate:
 	--password=686314 \
 	--changeLogFile=/migrations/changelog.xml migrate
 
+
 .PHONY: run_app
 run_app:
 	python manage.py
+
+.PHONY: clean
+clean:
+	rm -rf venv
