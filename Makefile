@@ -10,6 +10,7 @@ setup:
 	. venv/bin/activate; pip3 install -r requirements/requirements.txt
 
 
+
 .PHONY: liq_migrate
 liq_migrate:
 	./migrations/liquibase --url=jdbc:postgresql://localhost/warehouse \
