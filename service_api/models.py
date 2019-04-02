@@ -1,6 +1,6 @@
 import uuid
 
-from decimal import Decimal
+
 
 from sqlalchemy import (
     Table,
@@ -8,7 +8,8 @@ from sqlalchemy import (
     MetaData,
     String,
     Integer,
-    DateTime
+    DateTime,
+    DECIMAL
 )
 
 from sqlalchemy.dialects.postgresql import UUID
@@ -54,8 +55,8 @@ Parsel = Table(
     Column('id', UUID(as_uuid=True), primary_key=True, default=uuid.uuid4),
     Column('description', String, nullable=False),
     Column('type_id', UUID(as_uuid=True), ForeignKey('parseltype.id', ondelete="CASCADE")),
-    Column('weight', Decimal, nullable=False),
-    Column('cost', Decimal, nullable=False),
+    Column('weight', DECIMAL, nullable=False),
+    Column('cost', DECIMAL, nullable=False),
     Column('supply_id', UUID(as_uuid=True), ForeignKey('supply.id', ondelete="CASCADE"))
 )
 
