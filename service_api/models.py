@@ -57,6 +57,7 @@ Parsel = Table(
     Column('type_id', UUID(as_uuid=True), ForeignKey('parseltype.id', ondelete="CASCADE")),
     Column('weight', DECIMAL, nullable=False),
     Column('cost', DECIMAL, nullable=False),
+    Column('volume', DECIMAL, nullable=False),
     Column('supply_id', UUID(as_uuid=True), ForeignKey('supply.id', ondelete="CASCADE"))
 )
 
