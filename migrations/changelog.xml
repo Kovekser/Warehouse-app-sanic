@@ -30,5 +30,4 @@
     <changeSet author="kkovale@softserveinc.com" id="version_bump_1.0.4">
         <tagDatabase tag="version_1.0.4"/>
     </changeSet>
-
 </databaseChangeLog>

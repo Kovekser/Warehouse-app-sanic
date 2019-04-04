@@ -1,0 +1,32 @@
+[
+  {
+    "address": "197D Klochkovska str.",
+    "max_weight": 1000,
+    "max_capacity": 30000
+  },
+  {
+    "address": "1 Akademyka proskury str.",
+    "max_weight": 30,
+    "max_capacity": 1000
+  },
+  {
+    "address": "16 Envera Akhsrova str.",
+    "max_weight": 10,
+    "max_capacity": 500
+  },
+  {
+    "address": "76 Matiushenko str.",
+    "max_weight": 30,
+    "max_capacity": 1500
+  },
+  {
+    "address": "76 Matiushenko str.",
+    "max_weight": 10,
+    "max_capacity": 400
+  },
+  {
+    "address": "56 Poltavskyy shliakh str.",
+    "max_weight": 1000,
+    "max_capacity": 40000
+  }
+]

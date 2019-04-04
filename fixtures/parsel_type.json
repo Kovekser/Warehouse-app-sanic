@@ -1,0 +1,17 @@
+[
+  {
+    "type_name": "documents"
+  },
+  {
+    "type_name": "letter"
+  },
+  {
+    "type_name": "big_box"
+  },
+  {
+    "type_name": "medium_box"
+  },
+  {
+    "type_name": "small_box"
+  }
+]

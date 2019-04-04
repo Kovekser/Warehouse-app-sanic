@@ -1,9 +1,8 @@
 import uuid
 
-
-
 from sqlalchemy import (
     Table,
+    ForeignKey,
     Column,
     MetaData,
     String,
