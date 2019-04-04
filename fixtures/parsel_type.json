@@ -1,17 +1,17 @@
-{
-  "type_a": {
-    "name": "documents"
+[
+  {
+    "type_name": "documents"
   },
-  "type_b": {
-    "name": "letter"
+  {
+    "type_name": "letter"
   },
-  "type_c": {
-    "name": "big_box"
+  {
+    "type_name": "big_box"
   },
-  "type_d": {
-    "name": "medium_box"
+  {
+    "type_name": "medium_box"
   },
-  "type_e": {
-    "name": "small_box"
+  {
+    "type_name": "small_box"
   }
-}
+]

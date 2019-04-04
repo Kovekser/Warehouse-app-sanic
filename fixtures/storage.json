@@ -1,32 +1,32 @@
-{
-  "storage_1": {
+[
+  {
     "address": "197D Klochkovska str.",
     "max_weight": 1000,
     "max_capacity": 30000
   },
-  "storage_2": {
+  {
     "address": "1 Akademyka proskury str.",
     "max_weight": 30,
     "max_capacity": 1000
   },
-  "storage_3": {
+  {
     "address": "16 Envera Akhsrova str.",
     "max_weight": 10,
     "max_capacity": 500
   },
-  "storage_4": {
+  {
     "address": "76 Matiushenko str.",
     "max_weight": 30,
     "max_capacity": 1500
   },
-  "storage_5": {
+  {
     "address": "76 Matiushenko str.",
     "max_weight": 10,
     "max_capacity": 400
   },
-  "storage_6": {
+  {
     "address": "56 Poltavskyy shliakh str.",
     "max_weight": 1000,
     "max_capacity": 40000
   }
-}
+]

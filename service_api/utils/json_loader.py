@@ -1,21 +1,23 @@
 import json
-# import os
+import os
 
-# os.chdir("../..")
 
 class JsonLoader:
-    def __init__(self, json_file):
+    def __init__(self, json_file=None):
         self.json_file = json_file
+        self._data = None
+
+    @staticmethod
+    def json_exists(file_name):
+        """Function validates if requested JSON file exists"""
+        if os.path.exists(file_name):
+            return file_name
+        else:
+            raise FileNotFoundError("File with name {} doesn't exist".format(file_name))
 
     @property
     def loaded_json(self):
-        with open(self.json_file) as f:
-            self._data = json.load(f)
-        yield from self._data.items()
-
-# file_name = "fixtures/clients.json"
-#
-# json_clients = JsonLoader(file_name)
-# fff = json_clients.loaded_json
-# print(next(fff))
-# print(next(fff))
+        if self.json_exists(self.json_file):
+            with open(self.json_file) as f:
+                self._data = json.load(f)
+            yield from self._data

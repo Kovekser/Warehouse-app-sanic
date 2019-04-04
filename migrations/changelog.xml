@@ -30,8 +30,4 @@
     <changeSet author="kkovale@softserveinc.com" id="version_bump_1.0.4">
         <tagDatabase tag="version_1.0.4"/>
     </changeSet>
-    <include file="changesets/05_add_col_parsel.xml" relativeToChangelogFile="true"/>
-    <changeSet author="kkovale@softserveinc.com" id="version_bump_1.0.5">
-        <tagDatabase tag="version_1.0.5"/>
-    </changeSet>
 </databaseChangeLog>
