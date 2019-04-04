@@ -4,7 +4,8 @@ import os
 
 class JsonLoader:
     def __init__(self, json_file=None):
-        self.json_file = json_file
+        if self.json_exists(json_file):
+            self.json_file = json_file
         self._data = None
 
     @staticmethod
@@ -17,7 +18,6 @@ class JsonLoader:
 
     @property
     def loaded_json(self):
-        if self.json_exists(self.json_file):
-            with open(self.json_file) as f:
-                self._data = json.load(f)
-            yield from self._data
+        with open(self.json_file) as f:
+            self._data = json.load(f)
+        yield from self._data
