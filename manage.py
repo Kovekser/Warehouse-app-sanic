@@ -2,9 +2,9 @@ import argparse
 import sys
 import os
 
-from service_api.application import create_app
+from commands import runserver
 from service_api.utils.json_loader import JsonLoader
-from service_api.utils.path_finder import get_abs_path
+from service_api.utils.path_finder import get_abs_path, get_tab_name
 
 
 def parse_args(args):
@@ -26,10 +26,11 @@ def main(args=None):
             file_list = [get_abs_path(f) for f in os.listdir(get_abs_path())]
         else:
             file_list = [get_abs_path(f) for f in parsed_args.table]
-        data = [JsonLoader(f).loaded_json for f in file_list]  # list of generators
-        # TODO: Load data to connected DB
+        print(file_list)
+        data = {get_tab_name(f): JsonLoader(f).loaded_json for f in file_list}  # dict of generators {tab_name: Gen}
+        # TODO insert data to database
 
-    create_app()
+    runserver()
 
 
 if __name__ == '__main__':
