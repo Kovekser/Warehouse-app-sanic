@@ -5,8 +5,6 @@ import os
 from commands import runserver
 from service_api.utils.json_loader import JsonLoader
 from service_api.utils.path_finder import get_abs_path, get_tab_name
-# from service_api.utils.insert_many import insert_many
-from service_api.domain.clients import insert_one
 
 
 def parse_args(args):
@@ -30,6 +28,7 @@ def main(args=None):
             file_list = [get_abs_path(f) for f in parsed_args.table]
         print(file_list)
         data = {get_tab_name(f): JsonLoader(f).loaded_json for f in file_list}  # dict of generators {tab_name: Gen}
+        # TODO insert data to database
 
     runserver()
 

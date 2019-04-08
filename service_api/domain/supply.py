@@ -6,6 +6,7 @@ async def get_all_supply():
     statement = Supply.select()
     return await select(statement)
 
+
 async def insert_one(row):
     statement = Supply.insert().values(**row)
     await insert(statement)

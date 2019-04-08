@@ -18,9 +18,10 @@ from sqlalchemy.dialects.postgresql import UUID
 metadata = MetaData()
 delivery_len = randint(3, 20)
 
-def delivery_date(delivery_len):
+
+def delivery_date(length):
     now_date = datetime.utcnow()
-    return now_date.replace(day=now_date.day + delivery_len)
+    return now_date.replace(day=now_date.day + length)
 
 
 Clients = Table(

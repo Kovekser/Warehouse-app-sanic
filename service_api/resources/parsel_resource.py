@@ -8,13 +8,14 @@ from service_api.domain.parsel import get_all_parsels, insert_one
 
 class ParselAllResource(HTTPMethodView):
     async def get(self, request):
-        a = await get_all_parsels()
-        for row in a:
+        all_parsel = await get_all_parsels()
+        for row in all_parsel:
             for k in row:
                 if isinstance(row[k], uuid.UUID):
                     row[k] = str(row[k])
 
-        return json({"Parsels": a})
+        return json({"Parsels": all_parsel})
+
 
     async def post(self, request):
         await insert_one(request.json)

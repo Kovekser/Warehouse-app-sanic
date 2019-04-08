@@ -7,11 +7,11 @@ from service_api.domain.parsel_type import get_all_types, insert_one
 
 class ParselTypeAllResource(HTTPMethodView):
     async def get(self, request):
-        a = await get_all_types()
-        for row in a:
+        all_types = await get_all_types()
+        for row in all_types:
             row['id'] = str(row['id'])
 
-        return json({"Types": a})
+        return json({"Types": all_types})
 
 
     async def post(self, request):
