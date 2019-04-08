@@ -7,3 +7,8 @@ def get_abs_path(file=''):
     or to the file.json
     """
     return os.path.join(os.getcwd(), 'fixtures', file)
+
+def get_tab_name(abs_path):
+    """Function retuns name of table in database
+    (filename without .json)"""
+    return os.path.basename(abs_path).rstrip('.json').capitalize()

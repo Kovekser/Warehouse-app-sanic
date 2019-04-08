@@ -1,6 +1,6 @@
-DB_INFO = {
+DB_CONFIG = {
     'host': 'localhost',
     'user': 'admin',
-    'pass': '686314',
+    'password': '686314',
     'database': 'warehouse'
 }
