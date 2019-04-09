@@ -7,6 +7,6 @@ async def get_all_types():
     return await select(statement)
 
 
-async def insert_one(row):
+async def insert_one_type(row):
     statement = Parseltype.insert().values(**row)
     await insert(statement)

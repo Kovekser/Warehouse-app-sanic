@@ -6,7 +6,7 @@ async def get_all_parsels():
     statement = Parsel.select()
     return await select(statement)
 
-async def insert_one(row):
+async def insert_one_parsel(row):
     statement = Parsel.insert().values(**row)
     await insert(statement)
 
