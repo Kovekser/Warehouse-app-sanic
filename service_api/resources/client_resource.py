@@ -10,9 +10,15 @@ class ClientAllResource(HTTPMethodView):
         all_clients = await get_all_clients()
         for row in all_clients:
             row['id'] = str(row['id'])
-
         return json({"Clients": all_clients})
 
     async def post(self, request):
         await insert_one_client(request.json)
         return json({'msg': 'Successfully created user'})
+
+
+class ClientResource(HTTPMethodView):
+    async def get(self, request, client_id):
+        client = await get_client_by_id(client_id)
+        client['id'] = str(client['id'])
+        return json({"Client": client})
