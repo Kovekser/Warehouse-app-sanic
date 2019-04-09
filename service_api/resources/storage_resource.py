@@ -2,7 +2,11 @@ from sanic.views import HTTPMethodView
 from sanic.response import json
 
 
-from service_api.domain.storage import get_all_storage, insert_one_storage, get_storage_by_id
+from service_api.domain.storage import (get_all_storage,
+                                        insert_one_storage,
+                                        get_storage_by_id,
+                                        delete_one_storage,
+                                        update_storage_by_id)
 
 
 class StorageAllResource(HTTPMethodView):
@@ -22,3 +26,13 @@ class StorageResource(HTTPMethodView):
         storage = await get_storage_by_id(storage_id)
         storage['id'] = str(storage['id'])
         return json({"Storage": storage})
+
+    async def delete(self, request, storage_id):
+        del_storage = await get_storage_by_id(storage_id)
+        await delete_one_storage(storage_id)
+        return json({'msg': 'Successfully deleted storge {}'.format(del_storage['address'])})
+
+    async def put(self, request, storage_id):
+        storage = await get_storage_by_id(storage_id)
+        await update_storage_by_id(storage_id, request.json)
+        return json({'msg': 'Storage {} succesfully updated'.format(storage['address'])})
