@@ -16,3 +16,10 @@ class ClientAllResource(HTTPMethodView):
     async def post(self, request):
         await insert_one_client(request.json)
         return json({'msg': 'Successfully created user'})
+
+
+class ClientResource(HTTPMethodView):
+    async def get(self, request, client_id):
+        client = await get_client_by_id(client_id)
+        client['id'] = str(client['id'])
+        return json({"Client": client})

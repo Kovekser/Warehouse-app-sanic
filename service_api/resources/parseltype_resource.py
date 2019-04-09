@@ -2,7 +2,7 @@ from sanic.views import HTTPMethodView
 from sanic.response import json
 
 
-from service_api.domain.parsel_type import get_all_types, insert_one_type
+from service_api.domain.parsel_type import get_all_types, insert_one_type, get_type_by_id
 
 
 class ParselTypeAllResource(HTTPMethodView):
@@ -17,3 +17,10 @@ class ParselTypeAllResource(HTTPMethodView):
     async def post(self, request):
         await insert_one_type(request.json)
         return json({'msg': 'Successfully created parsel type'})
+
+
+class ParselTypeResource(HTTPMethodView):
+    async def get(self, request, type_id):
+        type = await get_type_by_id(type_id)
+        type['id'] = str(type['id'])
+        return json({"Parsel_type": type})
