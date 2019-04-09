@@ -7,6 +7,6 @@ async def get_all_storage():
     return await select(statement)
 
 
-async def insert_one(row):
+async def insert_one_storage(row):
     statement = Storage.insert().values(**row)
     await insert(statement)

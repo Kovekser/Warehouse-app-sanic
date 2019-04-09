@@ -2,7 +2,7 @@ from sanic.views import HTTPMethodView
 from sanic.response import json
 
 
-from service_api.domain.clients import get_all_clients, insert_one
+from service_api.domain.clients import get_all_clients, insert_one_client, get_client_by_id
 
 
 class ClientAllResource(HTTPMethodView):
@@ -14,5 +14,5 @@ class ClientAllResource(HTTPMethodView):
         return json({"Clients": all_clients})
 
     async def post(self, request):
-        await insert_one(request.json)
+        await insert_one_client(request.json)
         return json({'msg': 'Successfully created user'})

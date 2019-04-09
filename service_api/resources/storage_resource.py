@@ -2,7 +2,7 @@ from sanic.views import HTTPMethodView
 from sanic.response import json
 
 
-from service_api.domain.storage import get_all_storage, insert_one
+from service_api.domain.storage import get_all_storage, insert_one_storage
 
 
 class StorageAllResource(HTTPMethodView):
@@ -15,5 +15,5 @@ class StorageAllResource(HTTPMethodView):
 
 
     async def post(self, request):
-        await insert_one(request.json)
+        await insert_one_storage(request.json)
         return json({'msg': 'Successfully created storage'})

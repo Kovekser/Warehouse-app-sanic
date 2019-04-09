@@ -20,4 +20,4 @@ class JsonLoader:
     def loaded_json(self):
         with open(self.json_file) as f:
             self._data = json.load(f)
-        yield from self._data
+            yield from self._data

@@ -1,10 +1,8 @@
 import argparse
 import sys
-import os
 
 from commands import runserver
-from service_api.utils.json_loader import JsonLoader
-from service_api.utils.path_finder import get_abs_path, get_tab_name
+from service_api.utils.load_json_data import load_fixtures
 
 
 def parse_args(args):
@@ -22,13 +20,7 @@ def main(args=None):
     parsed_args = parse_args(args or sys.argv[1:])
 
     if parsed_args.command == "load_json":
-        if parsed_args.all:
-            file_list = [get_abs_path(f) for f in os.listdir(get_abs_path())]
-        else:
-            file_list = [get_abs_path(f) for f in parsed_args.table]
-        print(file_list)
-        data = {get_tab_name(f): JsonLoader(f).loaded_json for f in file_list}  # dict of generators {tab_name: Gen}
-        # TODO insert data to database
+        load_fixtures(parsed_args)
 
     runserver()
 

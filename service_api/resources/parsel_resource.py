@@ -3,7 +3,7 @@ from sanic.views import HTTPMethodView
 from sanic.response import json
 
 
-from service_api.domain.parsel import get_all_parsels, insert_one
+from service_api.domain.parsel import get_all_parsels, insert_one_parsel
 
 
 class ParselAllResource(HTTPMethodView):
@@ -18,5 +18,5 @@ class ParselAllResource(HTTPMethodView):
 
 
     async def post(self, request):
-        await insert_one(request.json)
+        await insert_one_parsel(request.json)
         return json({'msg': 'Successfully created parsel'})
