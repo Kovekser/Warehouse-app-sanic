@@ -10,9 +10,7 @@ class StorageAllResource(HTTPMethodView):
         all_storage = await get_all_storage()
         for row in all_storage:
             row['id'] = str(row['id'])
-
         return json({"Storages": all_storage})
-
 
     async def post(self, request):
         await insert_one_storage(request.json)

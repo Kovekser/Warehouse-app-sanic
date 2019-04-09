@@ -13,9 +13,7 @@ class ParselAllResource(HTTPMethodView):
             for k in row:
                 if isinstance(row[k], uuid.UUID):
                     row[k] = str(row[k])
-
         return json({"Parsels": all_parsel})
-
 
     async def post(self, request):
         await insert_one_parsel(request.json)

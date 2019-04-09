@@ -10,9 +10,7 @@ class ParselTypeAllResource(HTTPMethodView):
         all_types = await get_all_types()
         for row in all_types:
             row['id'] = str(row['id'])
-
         return json({"Types": all_types})
-
 
     async def post(self, request):
         await insert_one_type(request.json)
@@ -21,6 +19,6 @@ class ParselTypeAllResource(HTTPMethodView):
 
 class ParselTypeResource(HTTPMethodView):
     async def get(self, request, type_id):
-        type = await get_type_by_id(type_id)
-        type['id'] = str(type['id'])
-        return json({"Parsel_type": type})
+        pars_type = await get_type_by_id(type_id)
+        pars_type['id'] = str(pars_type['id'])
+        return json({"Parsel_type": pars_type})

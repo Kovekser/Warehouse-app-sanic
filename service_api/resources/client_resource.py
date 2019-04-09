@@ -10,7 +10,6 @@ class ClientAllResource(HTTPMethodView):
         all_clients = await get_all_clients()
         for row in all_clients:
             row['id'] = str(row['id'])
-
         return json({"Clients": all_clients})
 
     async def post(self, request):
