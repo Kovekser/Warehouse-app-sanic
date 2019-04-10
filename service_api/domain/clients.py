@@ -1,7 +1,7 @@
 import uuid
 
 from service_api.models import Clients
-from service_api.db import select, insert
+from service_api.db import select, execute_statement
 
 
 async def get_all_clients():
@@ -17,4 +17,18 @@ async def get_client_by_id(client_id):
 
 async def insert_one_client(row):
     statement = Clients.insert().values(**row)
-    await insert(statement)
+    await execute_statement(statement)
+
+
+async def delete_one_client(client_id):
+    id_ = uuid.UUID(client_id)
+    statement = Clients.delete().where(Clients.c.id == id_)
+    await execute_statement(statement)
+
+
+async def update_client_by_id(client_id, data):
+    id_ = uuid.UUID(client_id)
+    statement = Clients.update().\
+        values(**data).\
+        where(Clients.c.id == id_)
+    await execute_statement(statement)

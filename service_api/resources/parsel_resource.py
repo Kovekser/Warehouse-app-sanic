@@ -3,7 +3,11 @@ from sanic.views import HTTPMethodView
 from sanic.response import json
 
 
-from service_api.domain.parsel import get_all_parsels, insert_one_parsel, get_parsel_by_id
+from service_api.domain.parsel import (get_all_parsels,
+                                       insert_one_parsel,
+                                       get_parsel_by_id,
+                                       delete_one_parsel,
+                                       update_parsel_by_id)
 
 
 class ParselAllResource(HTTPMethodView):
@@ -27,3 +31,11 @@ class ParselResource(HTTPMethodView):
             if isinstance(parsel[k], uuid.UUID):
                 parsel[k] = str(parsel[k])
         return json({"Parsel": parsel})
+
+    async def delete(self, request, parsel_id):
+        await delete_one_parsel(parsel_id)
+        return json({'msg': 'Successfully deleted parsel'})
+
+    async def put(self, request, parsel_id):
+        await update_parsel_by_id(parsel_id, request.json)
+        return json({'msg': 'Parsel {} succesfully updated'.format(parsel_id)})
