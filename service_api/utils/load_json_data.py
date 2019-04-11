@@ -10,7 +10,7 @@ from service_api.domain.storage import insert_one_storage
 from service_api.domain.supply import insert_one_supply
 
 
-models_dict = {'Client': insert_one_client,
+models_dict = {'Clients': insert_one_client,
                'Parsel': insert_one_parsel,
                'Parseltype': insert_one_type,
                'Storage': insert_one_storage,
