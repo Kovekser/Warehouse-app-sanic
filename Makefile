@@ -31,4 +31,4 @@ clean:
 
 .PHONY: test
 test:
-	python -m unittest tests/test_utils.py
+	coverage run -m unittest

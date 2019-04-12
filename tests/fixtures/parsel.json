@@ -1,0 +1,86 @@
+[
+  {
+    "description": "Food",
+    "type_id": "ac13d5ee-61ba-4945-b5e8-a84d8da5a885",
+    "weight": 17.3,
+    "cost": 381.6,
+    "supply_id": "7542e12a-c30b-4e68-9b22-42dbc477cb5a"
+  },
+  {
+    "description": "Clothes",
+    "type_id": "ac13d5ee-61ba-4945-b5e8-a84d8da5a885",
+    "weight": 15.6,
+    "cost": 2780,
+    "supply_id": "69d6e481-b4fb-447a-bc85-aa06c53c2eef"
+  },
+  {
+    "description": "Documents",
+    "type_id": "f538ef51-c3f9-4fa9-a539-ca49c5fc81a8",
+    "weight": 0.24,
+    "cost": 15,
+    "supply_id": "6931c8a2-69ae-4c6c-b0bb-4b43b66e8fa2"
+  },
+  {
+    "description": "Food",
+    "type_id": "ba194b27-7255-4e94-80b6-b011f29f6897",
+    "weight": 653.2,
+    "cost": 25461,
+    "supply_id": "67ea2c74-2831-40f2-8109-eadb8dcdcd58"
+  },
+  {
+    "description": "Food",
+    "type_id": "d8134182-6cbf-4aba-9cbe-4a3396ad430c",
+    "weight": 61,
+    "cost": 16243,
+    "supply_id": "3ac93c38-7114-43dd-810a-a11384be3fd8"
+  },
+  {
+    "description": "Other goods",
+    "type_id": "d8134182-6cbf-4aba-9cbe-4a3396ad430c",
+    "weight": 50,
+    "cost": 7891,
+    "supply_id": "04691388-56c1-4a49-8ae1-316c9439b026"
+  },
+  {
+    "description": "Other goods",
+    "type_id": "ba194b27-7255-4e94-80b6-b011f29f6897",
+    "weight": 200,
+    "cost": 50200,
+    "supply_id": "326340e4-2a0b-4156-b93a-c7b4f7872786"
+  },
+  {
+    "description": "Documents",
+    "type_id": "78f6f9ca-2771-406e-a926-db8c5006c605",
+    "weight": 0.1,
+    "cost": 21,
+    "supply_id": "04691388-56c1-4a49-8ae1-316c9439b026"
+  },
+  {
+    "description": "Documents",
+    "type_id": "78f6f9ca-2771-406e-a926-db8c5006c605",
+    "weight": 0.05,
+    "cost": 50,
+    "supply_id": "326340e4-2a0b-4156-b93a-c7b4f7872786"
+  },
+  {
+    "description": "Clothes",
+    "type_id": "ac13d5ee-61ba-4945-b5e8-a84d8da5a885",
+    "weight": 45,
+    "cost": 10780,
+    "supply_id": "326340e4-2a0b-4156-b93a-c7b4f7872786"
+  },
+  {
+    "description": "Food",
+    "type_id": "ac13d5ee-61ba-4945-b5e8-a84d8da5a885",
+    "weight": 32.4,
+    "cost": 3081.6,
+    "supply_id": "be8f3443-9d4e-44c6-8ce0-e9b9fea4adef"
+  },
+  {
+    "description": "Clothes",
+    "type_id": "ba194b27-7255-4e94-80b6-b011f29f6897",
+    "weight": 415.6,
+    "cost": 2780,
+    "supply_id": "c04624f4-33cf-4cdc-a1ba-c1500b179b5d"
+  }
+]

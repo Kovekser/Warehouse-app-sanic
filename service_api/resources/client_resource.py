@@ -35,4 +35,4 @@ class ClientResource(HTTPMethodView):
     async def put(self, request, client_id):
         client = await get_client_by_id(client_id)
         await update_client_by_id(client_id, request.json)
-        return json({'msg': 'User {} succesfully updated'.format(client['email'])})
+        return json({'msg': 'User {} successfully updated'.format(client['email'])})
