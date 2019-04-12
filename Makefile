@@ -32,3 +32,7 @@ clean:
 .PHONY: test
 test:
 	coverage run -m unittest
+
+.PHONY: report_test
+report_test:
+	coverage report --omit=/usr/*

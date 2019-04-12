@@ -63,7 +63,7 @@ class ClientResourceTestCase(TestCase):
 
     @patch('service_api.resources.client_resource.get_client_by_id',
            new=CoroutineMock(return_value=one_client))
-    def test_get_client_by_id_resource(self):
+    def test_get_client_by_id_exist_resource(self):
         request, response = app.test_client.get('/client/357642d9-4ac0-47f2-a802-252d82fff10b')
         self.assertEqual(response.json, {"Client": {"id": "357642d9-4ac0-47f2-a802-252d82fff10b",
                                                     "name": "Pablo",
@@ -71,3 +71,9 @@ class ClientResourceTestCase(TestCase):
                                                     "age": 52,
                                                     "address": "3494 Murry Street"
                                                     }})
+
+    @patch('service_api.resources.client_resource.get_client_by_id',
+           new=CoroutineMock(return_value=[]))
+    def test_get_client_by_id_not_exist_resource(self):
+        request, response = app.test_client.get('/client/468642d9-4ac0-47f2-a802-252d82fff10b')
+        self.assertEqual(response.json, {'msg': 'Client with id 468642d9-4ac0-47f2-a802-252d82fff10b does not exist'})

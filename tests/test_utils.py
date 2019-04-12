@@ -1,8 +1,11 @@
 from types import GeneratorType
+from datetime import datetime
+from freezegun import freeze_time
 from unittest import TestCase, mock
 
 from service_api.utils import path_finder
 from service_api.utils.json_loader import JsonLoader
+from service_api.models import delivery_date
 
 
 @mock.patch('service_api.utils.path_finder.os.getcwd',
@@ -41,11 +44,11 @@ class JsonLoaderClassTestCase(TestCase):
             JsonLoader()
 
     def test_json_exists_true(self):
-        file = "./fixtures/clients.json"
+        file = "./tests/fixtures/clients.json"
         self.assertTrue(JsonLoader.json_exists(file))
 
     def test_assert_json_not_exists(self):
-        wrong_file = "./fixtures/aaaa.json"
+        wrong_file = "./tests/fixtures/aaaa.json"
         error_msg = "File with name {} doesn't exist".format(wrong_file)
         with self.assertRaises(FileNotFoundError) as err:
             JsonLoader.json_exists(wrong_file)
@@ -53,24 +56,36 @@ class JsonLoaderClassTestCase(TestCase):
 
     @mock.patch("service_api.utils.json_loader.json.load", new=mock.Mock(return_value=[]))
     def test_raise_stopiteration_empty_json(self):
-        file = "./fixtures/clients.json"
+        file = "./tests/fixtures/clients.json"
         with self.assertRaises(StopIteration):
             test_json = JsonLoader(file).loaded_json
             next(test_json)
 
     def test_load_json_return_gen(self):
-        file = "./fixtures/clients.json"
+        file = "./tests/fixtures/clients.json"
         test_load = JsonLoader(file).loaded_json
         self.assertIsInstance(test_load, GeneratorType)
 
     def test_load_json_loads_correctly(self):
-        file = "./fixtures/clients.json"
+        file = "./tests/fixtures/clients.json"
         json_row = {
+            "id": "31732169-9b7b-4f09-aa1b-7fecb350ab14",
             "name": "John",
             "email": "johnlara@mail.com",
             "age": 18,
-            "address": "3073 Derek Drive"}
+            "address": "3073 Derek Drive"
+        }
         test_load = JsonLoader(file).loaded_json
         test_row = next(test_load)
         self.assertIsInstance(test_row, dict)
         self.assertEqual(test_row, json_row)
+
+@freeze_time("2019-04-12")
+class ModelDeliveryDateTestCase(TestCase):
+    def test_delivery_date_in_current_month(self):
+        test_delivery = delivery_date(12)
+        self.assertEqual(test_delivery, datetime(2019, 4, 24))
+
+    def test_delivery_date_in_next_month(self):
+        test_delivery = delivery_date(20)
+        self.assertEqual(test_delivery, datetime(2019, 5, 2))

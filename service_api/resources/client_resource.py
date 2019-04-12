@@ -24,6 +24,8 @@ class ClientAllResource(HTTPMethodView):
 class ClientResource(HTTPMethodView):
     async def get(self, request, client_id):
         client = await get_client_by_id(client_id)
+        if not client:
+            return json({'msg': 'Client with id {} does not exist'.format(client_id)})
         client['id'] = str(client['id'])
         return json({"Client": client})
 
