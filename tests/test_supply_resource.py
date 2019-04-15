@@ -17,6 +17,10 @@ class SupplyResourceTestCase(TestCase):
         "received_date": 1555398655
     }
 
+    @classmethod
+    def setUpClass(cls):
+        cls.url = '/supply/3ac93c38-7114-43dd-810a-a11384be3fd8'
+
     @patch('service_api.resources.supply_resource.get_all_supply',
            new=CoroutineMock(return_value=[]))
     def test_get_all_supply_resource_empty_table(self):
@@ -27,6 +31,7 @@ class SupplyResourceTestCase(TestCase):
     @patch('service_api.resources.supply_resource.get_all_supply',
            new=CoroutineMock(return_value=select_all_data))
     def test_get_all_supply_resource_not_empty(self):
+
         row_keys = ("id", "from_storage", "to_storage", "status", "client_id", "send_date", "received_date")
         request, response = app.test_client.get('/supply')
 
@@ -49,14 +54,14 @@ class SupplyResourceTestCase(TestCase):
     @patch('service_api.resources.supply_resource.delete_one_supply',
            new=CoroutineMock(return_value=[]))
     def test_delete_one_supply_resource(self):
-        request, response = app.test_client.delete('/supply/3ac93c38-7114-43dd-810a-a11384be3fd8')
+        request, response = app.test_client.delete(self.url)
         self.assertEqual(response.status, 200)
         self.assertEqual(response.json, {'msg': 'Successfully deleted supply'})
 
     @patch('service_api.resources.supply_resource.update_supply_by_id',
            new=CoroutineMock(return_value=[]))
     def test_put_supply_resource(self):
-        request, response = app.test_client.put('/supply/3ac93c38-7114-43dd-810a-a11384be3fd8')
+        request, response = app.test_client.put(self.url)
         msg = {'msg': 'Supply 3ac93c38-7114-43dd-810a-a11384be3fd8 successfully updated'}
 
         self.assertEqual(response.status, 200)
@@ -65,7 +70,7 @@ class SupplyResourceTestCase(TestCase):
     @patch('service_api.resources.supply_resource.get_supply_by_id',
            new=CoroutineMock(return_value=one_supply))
     def test_get_supply_by_id_exists_resource(self):
-        request, response = app.test_client.get('/supply/3ac93c38-7114-43dd-810a-a11384be3fd8')
+        request, response = app.test_client.get(self.url)
         supply_by_id = {
             "Supply": {
                 "id": "3ac93c38-7114-43dd-810a-a11384be3fd8",

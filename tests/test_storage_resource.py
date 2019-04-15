@@ -14,6 +14,10 @@ class StorageResourceTestCase(TestCase):
         "max_capacity": 30000
     }
 
+    @classmethod
+    def setUpClass(cls):
+        cls.url = '/storage/fc6efd2d-86cb-4932-9acb-1ce97f8bb468'
+
     @patch('service_api.resources.storage_resource.get_all_storage',
            new=CoroutineMock(return_value=[]))
     def test_get_all_storage_resource_empty_table(self):
@@ -48,7 +52,7 @@ class StorageResourceTestCase(TestCase):
     @patch('service_api.resources.storage_resource.get_storage_by_id',
            new=CoroutineMock(return_value=one_storage))
     def test_delete_one_storage_resource(self):
-        request, response = app.test_client.delete('/storage/fc6efd2d-86cb-4932-9acb-1ce97f8bb468')
+        request, response = app.test_client.delete(self.url)
         self.assertEqual(response.status, 200)
         self.assertEqual(response.json, {'msg': 'Successfully deleted storage 197D Klochkovska str.'})
 
@@ -57,14 +61,14 @@ class StorageResourceTestCase(TestCase):
     @patch('service_api.resources.storage_resource.get_storage_by_id',
            new=CoroutineMock(return_value=one_storage))
     def test_put_storage_resource(self):
-        request, response = app.test_client.put('/storage/fc6efd2d-86cb-4932-9acb-1ce97f8bb468')
+        request, response = app.test_client.put(self.url)
         self.assertEqual(response.status, 200)
         self.assertEqual(response.json, {'msg': 'Storage 197D Klochkovska str. successfully updated'})
 
     @patch('service_api.resources.storage_resource.get_storage_by_id',
            new=CoroutineMock(return_value=one_storage))
     def test_get_storage_by_id_exists_resource(self):
-        request, response = app.test_client.get('/storage/fc6efd2d-86cb-4932-9acb-1ce97f8bb468')
+        request, response = app.test_client.get(self.url)
         storage_by_id = {
             "Storage": {
                 "id": "fc6efd2d-86cb-4932-9acb-1ce97f8bb468",

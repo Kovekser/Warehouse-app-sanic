@@ -16,6 +16,10 @@ class ParcelResourceTestCase(TestCase):
         "supply_id": "3ac93c38-7114-43dd-810a-a11384be3fd8"
     }
 
+    @classmethod
+    def setUpClass(cls):
+        cls.url = '/parcel/d384a7d2-58a5-47f6-9f23-92b8d0d4dae8'
+
     @patch('service_api.resources.parcel_resource.get_all_parcels',
            new=CoroutineMock(return_value=[]))
     def test_get_all_parcel_resource_empty_table(self):
@@ -48,14 +52,14 @@ class ParcelResourceTestCase(TestCase):
     @patch('service_api.resources.parcel_resource.delete_one_parcel',
            new=CoroutineMock(return_value=[]))
     def test_delete_one_parcel_resource(self):
-        request, response = app.test_client.delete('/parcel/d384a7d2-58a5-47f6-9f23-92b8d0d4dae8')
+        request, response = app.test_client.delete(self.url)
         self.assertEqual(response.status, 200)
         self.assertEqual(response.json, {'msg': 'Successfully deleted parcel'})
 
     @patch('service_api.resources.parcel_resource.update_parcel_by_id',
            new=CoroutineMock(return_value=[]))
     def test_put_parcel_resource(self):
-        request, response = app.test_client.put('/parcel/d384a7d2-58a5-47f6-9f23-92b8d0d4dae8')
+        request, response = app.test_client.put(self.url)
         msg = {'msg': 'Parcel d384a7d2-58a5-47f6-9f23-92b8d0d4dae8 successfully updated'}
 
         self.assertEqual(response.status, 200)
@@ -64,7 +68,7 @@ class ParcelResourceTestCase(TestCase):
     @patch('service_api.resources.parcel_resource.get_parcel_by_id',
            new=CoroutineMock(return_value=one_parcel))
     def test_get_parcel_by_id_exists_resource(self):
-        request, response = app.test_client.get('/parcel/d384a7d2-58a5-47f6-9f23-92b8d0d4dae8')
+        request, response = app.test_client.get(self.url)
         parcel_by_id = {
             "Parcel": {
                 "id": "d384a7d2-58a5-47f6-9f23-92b8d0d4dae8",
