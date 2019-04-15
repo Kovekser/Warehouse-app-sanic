@@ -5,20 +5,20 @@ from unittest import TestCase, mock
 
 from service_api.utils import path_finder
 from service_api.utils.json_loader import JsonLoader
-from service_api.models import delivery_date
+from service_api.utils.delivery_date import delivery_date
 
 
 @mock.patch('service_api.utils.path_finder.os.getcwd',
-            new=mock.Mock(return_value='/home/kkovale/My_code/Warehouse-app-sanic'))
+            new=mock.Mock(return_value='.'))
 class PathFinderTestCase(TestCase):
     def test_find_correct_path_file_name_not_empty(self):
-        correct_path = "/home/kkovale/My_code/Warehouse-app-sanic/fixtures/clients.json"
+        correct_path = "./fixtures/clients.json"
         test_path = path_finder.get_abs_path('clients.json')
         self.assertEqual(test_path, correct_path)
 
     def test_find_correct_path_file_name_empty(self):
         test_path = path_finder.get_abs_path()
-        self.assertEqual(test_path, "/home/kkovale/My_code/Warehouse-app-sanic/fixtures/")
+        self.assertEqual(test_path, "./fixtures/")
 
     def test_raise_exception_wrong_type_arg(self):
         with self.assertRaises(TypeError, msg='Integer is not valid file name'):
@@ -28,12 +28,12 @@ class PathFinderTestCase(TestCase):
 
     def test_wrong_path(self):
         test_path = path_finder.get_abs_path('clients')
-        correct_path = "/home/kkovale/My_code/Warehouse-app-sanic/fixtures/clients.json"
+        correct_path = "./fixtures/clients.json"
         self.assertNotEqual(test_path, correct_path)
 
     def test_gets_correct_tab_name(self):
         tab_names = ('Parsel', 'Supply', 'Storage', 'Parseltype', 'Clients')
-        correct_path = "/home/kkovale/My_code/Warehouse-app-sanic/fixtures/clients.json"
+        correct_path = "./fixtures/clients.json"
         test_name = path_finder.get_tab_name(correct_path)
         self.assertIn(test_name, tab_names)
 
@@ -77,8 +77,10 @@ class JsonLoaderClassTestCase(TestCase):
         }
         test_load = JsonLoader(file).loaded_json
         test_row = next(test_load)
+
         self.assertIsInstance(test_row, dict)
         self.assertEqual(test_row, json_row)
+
 
 @freeze_time("2019-04-12")
 class ModelDeliveryDateTestCase(TestCase):

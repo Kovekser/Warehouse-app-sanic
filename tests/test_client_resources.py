@@ -7,6 +7,7 @@ from service_api.application import app
 class SmokeEndPointTestCase(TestCase):
     def test_smoke_end_point(self):
         request, response = app.test_client.get('/smoke')
+        self.assertEqual(response.status, 200)
         self.assertEqual(response.json, {'Result': 'This is a smoke view'})
 
 
@@ -25,6 +26,7 @@ class ClientResourceTestCase(TestCase):
            new=CoroutineMock(return_value=[]))
     def test_get_all_clients_resource_empty_table(self):
         request, response = app.test_client.get('/client')
+        self.assertEqual(response.status, 200)
         self.assertEqual(response.json, {"Clients": []})
 
     @patch('service_api.resources.client_resource.get_all_clients',
@@ -32,9 +34,12 @@ class ClientResourceTestCase(TestCase):
     def test_get_all_clients_resource_not_empty(self):
         row_keys = ("id", "name", "email", "age", "address")
         request, response = app.test_client.get('/client')
-        self.assertGreater(len(response.json.values()), 0)
+
+        self.assertEqual(response.status, 200)
         self.assertIsInstance(response.json, dict)
         self.assertIsInstance(response.json['Clients'], list)
+        self.assertEqual(len(*response.json.values()), 4)
+
         for row in response.json['Clients']:
             self.assertIsInstance(row, dict)
             self.assertTrue(all(map(lambda x: x in row, row_keys)))
@@ -43,6 +48,7 @@ class ClientResourceTestCase(TestCase):
            new=CoroutineMock(return_value=[]))
     def test_post_one_client_resource(self):
         request, response = app.test_client.post('/client')
+        self.assertEqual(response.status, 200)
         self.assertEqual(response.json, {'msg': 'Successfully created user'})
 
     @patch('service_api.resources.client_resource.get_client_by_id',
@@ -51,7 +57,10 @@ class ClientResourceTestCase(TestCase):
            new=CoroutineMock(return_value=[]))
     def test_delete_one_client_resource(self):
         request, response = app.test_client.delete('/client/357642d9-4ac0-47f2-a802-252d82fff10b')
-        self.assertEqual(response.json, {'msg': 'Successfully deleted user pablogibson@mail.com'})
+        msg = {'msg': 'Successfully deleted user pablogibson@mail.com'}
+
+        self.assertEqual(response.status, 200)
+        self.assertEqual(response.json, msg)
 
     @patch('service_api.resources.client_resource.get_client_by_id',
            new=CoroutineMock(return_value=one_client))
@@ -59,21 +68,33 @@ class ClientResourceTestCase(TestCase):
            new=CoroutineMock(return_value=[]))
     def test_put_client_resource(self):
         request, response = app.test_client.put('/client/357642d9-4ac0-47f2-a802-252d82fff10b')
-        self.assertEqual(response.json, {'msg': 'User pablogibson@mail.com successfully updated'})
+        msg = {'msg': 'User pablogibson@mail.com successfully updated'}
+
+        self.assertEqual(response.status, 200)
+        self.assertEqual(response.json, msg)
 
     @patch('service_api.resources.client_resource.get_client_by_id',
            new=CoroutineMock(return_value=one_client))
     def test_get_client_by_id_exist_resource(self):
         request, response = app.test_client.get('/client/357642d9-4ac0-47f2-a802-252d82fff10b')
-        self.assertEqual(response.json, {"Client": {"id": "357642d9-4ac0-47f2-a802-252d82fff10b",
-                                                    "name": "Pablo",
-                                                    "email": "pablogibson@mail.com",
-                                                    "age": 52,
-                                                    "address": "3494 Murry Street"
-                                                    }})
+        client_by_id = {
+            "Client": {
+                "id": "357642d9-4ac0-47f2-a802-252d82fff10b",
+                "name": "Pablo",
+                "email": "pablogibson@mail.com",
+                "age": 52,
+                "address": "3494 Murry Street"
+            }
+        }
+
+        self.assertEqual(response.status, 200)
+        self.assertEqual(response.json, client_by_id)
 
     @patch('service_api.resources.client_resource.get_client_by_id',
            new=CoroutineMock(return_value=[]))
     def test_get_client_by_id_not_exist_resource(self):
         request, response = app.test_client.get('/client/468642d9-4ac0-47f2-a802-252d82fff10b')
-        self.assertEqual(response.json, {'msg': 'Client with id 468642d9-4ac0-47f2-a802-252d82fff10b does not exist'})
+        msg = {'msg': 'Client with id 468642d9-4ac0-47f2-a802-252d82fff10b does not exist'}
+
+        self.assertEqual(response.status, 200)
+        self.assertEqual(response.json, msg)
