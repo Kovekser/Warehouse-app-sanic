@@ -27,6 +27,8 @@ class SupplyAllResource(HTTPMethodView):
 class SupplyResource(HTTPMethodView):
     async def get(self, request, supply_id):
         supply = await get_supply_by_id(supply_id)
+        if not supply:
+            return json({'msg': 'Supply with id {} does not exist'.format(supply_id)})
         for k in supply:
             if isinstance(supply[k], uuid.UUID):
                 supply[k] = str(supply[k])
@@ -38,4 +40,4 @@ class SupplyResource(HTTPMethodView):
 
     async def put(self, request, supply_id):
         await update_supply_by_id(supply_id, request.json)
-        return json({'msg': 'Supply {} succesfully updated'.format(supply_id)})
+        return json({'msg': 'Supply {} successfully updated'.format(supply_id)})

@@ -9,7 +9,7 @@ from service_api.domain.parsel_type import (get_all_types,
                                             update_type_by_id)
 
 
-class ParselTypeAllResource(HTTPMethodView):
+class ParcelTypeAllResource(HTTPMethodView):
     async def get(self, request):
         all_types = await get_all_types()
         for row in all_types:
@@ -18,21 +18,23 @@ class ParselTypeAllResource(HTTPMethodView):
 
     async def post(self, request):
         await insert_one_type(request.json)
-        return json({'msg': 'Successfully created parsel type'})
+        return json({'msg': 'Successfully created parcel type'})
 
 
-class ParselTypeResource(HTTPMethodView):
+class ParcelTypeResource(HTTPMethodView):
     async def get(self, request, type_id):
         pars_type = await get_type_by_id(type_id)
+        if not pars_type:
+            return json({'msg': 'Parcel type with id {} does not exist'.format(type_id)})
         pars_type['id'] = str(pars_type['id'])
-        return json({"Parsel_type": pars_type})
+        return json({"Parcel_type": pars_type})
 
     async def delete(self, request, type_id):
         pars_type = await get_type_by_id(type_id)
         await delete_one_type(type_id)
-        return json({'msg': 'Successfully deleted parsel type {}'.format(pars_type['type_name'])})
+        return json({'msg': 'Successfully deleted parcel type {}'.format(pars_type['type_name'])})
 
     async def put(self, request, type_id):
         pars_type = await get_type_by_id(type_id)
         await update_type_by_id(type_id, request.json)
-        return json({'msg': 'Parsel type {} succesfully updated'.format(pars_type['type_name'])})
+        return json({'msg': 'Parcel type {} successfully updated'.format(pars_type['type_name'])})

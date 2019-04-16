@@ -1,0 +1,50 @@
+[
+  {
+    "id": "720745e2-cee6-4338-8399-72b6affb71a6",
+    "description": "Food",
+    "type_id": "ac13d5ee-61ba-4945-b5e8-a84d8da5a885",
+    "weight": 17.3,
+    "cost": 381.6,
+    "supply_id": "7542e12a-c30b-4e68-9b22-42dbc477cb5a"
+  },
+  {
+    "id": "53a6befc-b872-4b65-859e-11834477e292",
+    "description": "Clothes",
+    "type_id": "ac13d5ee-61ba-4945-b5e8-a84d8da5a885",
+    "weight": 15.6,
+    "cost": 2780,
+    "supply_id": "69d6e481-b4fb-447a-bc85-aa06c53c2eef"
+  },
+  {
+    "id": "1070d8f6-fa06-4355-be6b-ec4a51c0cb90",
+    "description": "Documents",
+    "type_id": "f538ef51-c3f9-4fa9-a539-ca49c5fc81a8",
+    "weight": 0.24,
+    "cost": 15,
+    "supply_id": "6931c8a2-69ae-4c6c-b0bb-4b43b66e8fa2"
+  },
+  {
+    "id": "3d51c891-868f-4b4c-ba62-3e1402d8d223",
+    "description": "Food",
+    "type_id": "ba194b27-7255-4e94-80b6-b011f29f6897",
+    "weight": 653.2,
+    "cost": 25461,
+    "supply_id": "67ea2c74-2831-40f2-8109-eadb8dcdcd58"
+  },
+  {
+    "id": "36461812-998b-40f4-98a1-35cbe7919d43",
+    "description": "Food",
+    "type_id": "d8134182-6cbf-4aba-9cbe-4a3396ad430c",
+    "weight": 61,
+    "cost": 16243,
+    "supply_id": "3ac93c38-7114-43dd-810a-a11384be3fd8"
+  },
+  {
+    "id": "d9915789-c1ec-4036-9d62-b29ba13c1eab",
+    "description": "Other goods",
+    "type_id": "d8134182-6cbf-4aba-9cbe-4a3396ad430c",
+    "weight": 50,
+    "cost": 7891,
+    "supply_id": "04691388-56c1-4a49-8ae1-316c9439b026"
+  }
+]

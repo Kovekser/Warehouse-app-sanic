@@ -13,4 +13,5 @@ def get_abs_path(file=''):
 def get_tab_name(abs_path):
     """Function retuns name of table in database
     (filename without .json)"""
-    return os.path.basename(abs_path).rstrip('.json').capitalize()
+    filename, file_extension = os.path.splitext(abs_path)
+    return os.path.basename(filename).capitalize()

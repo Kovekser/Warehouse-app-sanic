@@ -24,15 +24,17 @@ class StorageAllResource(HTTPMethodView):
 class StorageResource(HTTPMethodView):
     async def get(self, request, storage_id):
         storage = await get_storage_by_id(storage_id)
+        if not storage:
+            return json({'msg': 'Storage with id {} does not exist'.format(storage_id)})
         storage['id'] = str(storage['id'])
         return json({"Storage": storage})
 
     async def delete(self, request, storage_id):
         del_storage = await get_storage_by_id(storage_id)
         await delete_one_storage(storage_id)
-        return json({'msg': 'Successfully deleted storge {}'.format(del_storage['address'])})
+        return json({'msg': 'Successfully deleted storage {}'.format(del_storage['address'])})
 
     async def put(self, request, storage_id):
         storage = await get_storage_by_id(storage_id)
         await update_storage_by_id(storage_id, request.json)
-        return json({'msg': 'Storage {} succesfully updated'.format(storage['address'])})
+        return json({'msg': 'Storage {} successfully updated'.format(storage['address'])})

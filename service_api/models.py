@@ -15,13 +15,10 @@ from sqlalchemy import (
 
 from sqlalchemy.dialects.postgresql import UUID
 
+from service_api.utils.delivery_date import delivery_date
+
 metadata = MetaData()
 delivery_len = randint(3, 20)
-
-
-def delivery_date(length):
-    now_date = datetime.utcnow()
-    return now_date.replace(day=now_date.day + length)
 
 
 Clients = Table(
@@ -33,7 +30,7 @@ Clients = Table(
     Column('address', String, nullable=False),
 )
 
-Parseltype = Table(
+Parceltype = Table(
     "parseltype", metadata,
     Column('id', UUID(as_uuid=True), primary_key=True, default=uuid.uuid4),
     Column('type_name', String, nullable=False)
@@ -54,11 +51,11 @@ Supply = Table(
     Column('to_storage', UUID(as_uuid=True), ForeignKey('storage.id', ondelete="CASCADE")),
     Column('status', String, nullable=False),
     Column('client_id', UUID(as_uuid=True), ForeignKey('clients.id', ondelete="CASCADE")),
-    Column('send_date', DateTime, nullable=False, default=datetime.utcnow()),
+    Column('send_date', DateTime, nullable=False, default=datetime.today()),
     Column('received_date', DateTime, nullable=False, default=delivery_date(delivery_len)),
 )
 
-Parsel = Table(
+Parcel = Table(
     'parsel', metadata,
     Column('id', UUID(as_uuid=True), primary_key=True, default=uuid.uuid4),
     Column('description', String, nullable=False),
@@ -68,4 +65,4 @@ Parsel = Table(
     Column('supply_id', UUID(as_uuid=True), ForeignKey('supply.id', ondelete="CASCADE"))
 )
 
-models = (Parsel, Supply, Storage, Parseltype, Clients)
+models = (Parcel, Supply, Storage, Parceltype, Clients)

@@ -1,5 +1,5 @@
-.PHONY: test
-test:
+.PHONY: test_run
+test_run:
 	@echo 'test run'
 
 
@@ -28,3 +28,11 @@ run_app:
 .PHONY: clean
 clean:
 	rm -rf venv
+
+.PHONY: test
+test:
+	coverage run -m unittest
+
+.PHONY: report_test
+report_test:
+	coverage report --omit=/usr/*

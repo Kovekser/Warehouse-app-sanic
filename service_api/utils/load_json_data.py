@@ -4,14 +4,14 @@ import asyncio
 from service_api.utils.json_loader import JsonLoader
 from service_api.utils.path_finder import get_abs_path, get_tab_name
 from service_api.domain.clients import insert_one_client
-from service_api.domain.parsel import insert_one_parsel
+from service_api.domain.parcel import insert_one_parcel
 from service_api.domain.parsel_type import insert_one_type
 from service_api.domain.storage import insert_one_storage
 from service_api.domain.supply import insert_one_supply
 
 
-models_dict = {'Client': insert_one_client,
-               'Parsel': insert_one_parsel,
+models_dict = {'Clients': insert_one_client,
+               'Parsel': insert_one_parcel,
                'Parseltype': insert_one_type,
                'Storage': insert_one_storage,
                'Supply': insert_one_supply}
