@@ -16,19 +16,21 @@ async def get_client_by_id(client_id):
 
 
 async def insert_one_client(row):
-    statement = Clients.insert().values(**row)
+    statement = Clients.insert().values(**row)#.returning(Clients.c.email)
     await execute_statement(statement)
 
 
 async def delete_one_client(client_id):
     id_ = uuid.UUID(client_id)
-    statement = Clients.delete().where(Clients.c.id == id_)
-    await execute_statement(statement)
-
-
-async def update_client_by_id(client_id, data):
-    id_ = uuid.UUID(client_id)
-    statement = Clients.update().\
-        values(**data).\
+    statement = Clients.delete().\
+        returning(Clients.c.email).\
         where(Clients.c.id == id_)
-    await execute_statement(statement)
+    return await select(statement)
+
+
+async def update_client_by_id(data):
+    # id_ = uuid.UUID(data['id'])
+    statement = Clients.update().returning(Clients.c.email).\
+        values(**data).\
+        where(Clients.c.id == data['id'])
+    return await select(statement)
