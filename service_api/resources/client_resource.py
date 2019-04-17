@@ -52,7 +52,6 @@ class ClientResource(HTTPMethodView):
     async def put(self, request, client_id):
         json_input = request.json
         json_input['id'] = str(client_id)
-        print(json_input)
         client_data, err = ClientSchema().load(json_input)
         if err:
             return json({'Errors': err}, status=404)

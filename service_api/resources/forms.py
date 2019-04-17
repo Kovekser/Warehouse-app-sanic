@@ -23,5 +23,3 @@ class ClientSchema(Schema):
             raise ValidationError(err.args)
         except KeyError as err:
             raise ValidationError(err.args)
-
-
