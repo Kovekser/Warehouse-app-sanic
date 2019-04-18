@@ -42,32 +42,135 @@ class StorageResourceTestCase(TestCase):
 
     @patch('service_api.resources.storage_resource.insert_one_storage',
            new=CoroutineMock(return_value=[]))
-    def test_post_one_storage_resource(self):
-        request, response = app.test_client.post('/storage')
+    def test_post_one_storage_resource_valid_data(self):
+        request, response = app.test_client.post('/storage', json={
+            "id": "fc6efd2d-86cb-4932-9acb-1ce97f8bb468",
+            "address": "197D Klochkovska str.",
+            "max_weight": 1000,
+            "max_capacity": 30000
+        })
+
         self.assertEqual(response.status, 200)
         self.assertEqual(response.json, {'msg': 'Successfully created storage'})
 
-    @patch('service_api.resources.storage_resource.delete_one_storage',
+    @patch('service_api.resources.storage_resource.insert_one_storage',
            new=CoroutineMock(return_value=[]))
-    @patch('service_api.resources.storage_resource.get_storage_by_id',
-           new=CoroutineMock(return_value=one_storage))
-    def test_delete_one_storage_resource(self):
+    def test_post_one_storage_resource_no_id(self):
+        request, response = app.test_client.post('/storage', json={
+            "address": "197D Klochkovska str.",
+            "max_weight": 1000,
+            "max_capacity": 30000
+        })
+        msg = {'Errors': {'id': ['Missing data for required field.']}}
+
+        self.assertEqual(response.status, 404)
+        self.assertEqual(response.json, msg)
+
+    @patch('service_api.resources.storage_resource.insert_one_storage',
+           new=CoroutineMock(return_value=[]))
+    def test_post_one_storage_resource_bad_types(self):
+        request, response = app.test_client.post('/storage', json={
+            "id": "123",
+            "address": 123,
+            "max_weight": 'INVALID',
+            "max_capacity": 'INVALID'
+        })
+        msg = {'Errors': {'id': ['Not a valid UUID.'],
+                          'max_capacity': ['Not a valid integer.'],
+                          'max_weight': ['Not a valid integer.'],
+                          'address': ['Not a valid string.']}}
+
+        self.assertEqual(response.status, 404)
+        self.assertEqual(response.json, msg)
+
+    @patch('service_api.resources.storage_resource.insert_one_storage',
+           new=CoroutineMock(return_value=[]))
+    def test_post_one_storage_resource_bad_types_no_id(self):
+        request, response = app.test_client.post('/storage', json={
+            "address": 123,
+            "max_weight": 'INVALID',
+            "max_capacity": 'INVALID'
+        })
+        msg = {'Errors': {'id': ['Missing data for required field.'],
+                          'max_capacity': ['Not a valid integer.'],
+                          'max_weight': ['Not a valid integer.'],
+                          'address': ['Not a valid string.']}}
+
+        self.assertEqual(response.status, 404)
+        self.assertEqual(response.json, msg)
+
+    @patch('service_api.resources.storage_resource.delete_one_storage',
+           new=CoroutineMock(return_value={'address': '197D Klochkovska str.'}))
+    def test_delete_one_storage_resource_valid(self):
         request, response = app.test_client.delete(self.url)
         self.assertEqual(response.status, 200)
         self.assertEqual(response.json, {'msg': 'Successfully deleted storage 197D Klochkovska str.'})
 
+    @patch('service_api.resources.storage_resource.delete_one_storage',
+           new=CoroutineMock(return_value=[]))
+    def test_delete_one_storage_resource_id_not_exist(self):
+        request, response = app.test_client.delete('/storage/fc6efd2d-39cb-4932-9acb-1ce97f8bb468')
+        msg = {'msg': 'Storage with id fc6efd2d-39cb-4932-9acb-1ce97f8bb468 does not exist'}
+
+        self.assertEqual(response.status, 404)
+        self.assertEqual(response.json, msg)
+
+    @patch('service_api.resources.storage_resource.delete_one_storage',
+           new=CoroutineMock(return_value=[]))
+    def test_delete_one_storage_resource_bad_id(self):
+        request, response = app.test_client.delete('/storage/123')
+        msg = {"Errors": {
+            "_schema": [
+                ["badly formed hexadecimal UUID string"]
+            ]
+        }}
+
+        self.assertEqual(response.status, 404)
+        self.assertEqual(response.json, msg)
+
+    @patch('service_api.resources.storage_resource.update_storage_by_id',
+           new=CoroutineMock(return_value={'address': '56 Klochkovska str.'}))
+    def test_put_storage_resource_valid(self):
+        request, response = app.test_client.put(self.url, json={
+            'address': '56 Klochkovska str.',
+            'max_weight': 500,
+            'max_capacity': 100000
+        })
+        self.assertEqual(response.status, 200)
+        self.assertEqual(response.json, {'msg': 'Storage 56 Klochkovska str. successfully updated'})
+
     @patch('service_api.resources.storage_resource.update_storage_by_id',
            new=CoroutineMock(return_value=[]))
-    @patch('service_api.resources.storage_resource.get_storage_by_id',
-           new=CoroutineMock(return_value=one_storage))
-    def test_put_storage_resource(self):
-        request, response = app.test_client.put(self.url)
-        self.assertEqual(response.status, 200)
-        self.assertEqual(response.json, {'msg': 'Storage 197D Klochkovska str. successfully updated'})
+    def test_put_storage_resource_id_not_exist(self):
+        request, response = app.test_client.put('/storage/fc6efd2d-39cb-4932-9acb-1ce97f8bb468', json={
+            'address': '56 Klochkovska str.',
+            'max_weight': 500,
+            'max_capacity': 100000
+        })
+        msg = {'msg': 'Storage with id fc6efd2d-39cb-4932-9acb-1ce97f8bb468 does not exist'}
+
+        self.assertEqual(response.status, 404)
+        self.assertEqual(response.json, msg)
+
+    @patch('service_api.resources.storage_resource.update_storage_by_id',
+           new=CoroutineMock(return_value=[]))
+    def test_put_storage_resource_bad_types(self):
+        request, response = app.test_client.put('/storage/123', json={
+            'address': 123,
+            'max_weight': 'INVALID',
+            'max_capacity': 'INVALID'
+        })
+        msg = {'Errors': {'id': ['Not a valid UUID.'],
+                          'max_capacity': ['Not a valid integer.'],
+                          'max_weight': ['Not a valid integer.'],
+                          'address': ['Not a valid string.']}}
+
+        self.assertEqual(response.status, 404)
+        self.assertEqual(response.json, msg)
 
     @patch('service_api.resources.storage_resource.get_storage_by_id',
            new=CoroutineMock(return_value=one_storage))
-    def test_get_storage_by_id_exists_resource(self):
+    def test_get_storage_by_id_resource_valid(self):
         request, response = app.test_client.get(self.url)
         storage_by_id = {
             "Storage": {
@@ -87,5 +190,18 @@ class StorageResourceTestCase(TestCase):
         request, response = app.test_client.get('/storage/f384a7d2-58a5-47f6-9f23-92b8d0d4dae8')
         msg = {'msg': 'Storage with id f384a7d2-58a5-47f6-9f23-92b8d0d4dae8 does not exist'}
 
-        self.assertEqual(response.status, 200)
+        self.assertEqual(response.status, 404)
+        self.assertEqual(response.json, msg)
+
+    @patch('service_api.resources.storage_resource.get_storage_by_id',
+           new=CoroutineMock(return_value=[]))
+    def test_get_storage_by_id_resource_bad_id(self):
+        request, response = app.test_client.get('/storage/123')
+        msg = {"Errors": {
+            "_schema": [
+                ["badly formed hexadecimal UUID string"]
+            ]
+        }}
+
+        self.assertEqual(response.status, 404)
         self.assertEqual(response.json, msg)
