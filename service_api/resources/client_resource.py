@@ -7,7 +7,7 @@ from service_api.domain.clients import (get_all_clients,
                                         get_client_by_id,
                                         delete_one_client,
                                         update_client_by_id)
-from service_api.resources.forms import ClientSchema
+from service_api.forms import ClientSchema
 
 
 class ClientAllResource(HTTPMethodView):
@@ -29,7 +29,7 @@ class ClientAllResource(HTTPMethodView):
 
 class ClientResource(HTTPMethodView):
     async def get(self, request, client_id):
-        client_data, err = ClientSchema().dump({'id': client_id})
+        _, err = ClientSchema().dump({'id': client_id})
         if err:
             return json({'Errors': err}, status=404)
 
@@ -40,7 +40,7 @@ class ClientResource(HTTPMethodView):
         return json({'msg': 'Client with id {} does not exist'.format(client_id)}, status=404)
 
     async def delete(self, request, client_id):
-        client_data, err = ClientSchema().dump({'id': client_id})
+        _, err = ClientSchema().dump({'id': client_id})
         if err:
             return json({'Errors': err}, status=404)
 

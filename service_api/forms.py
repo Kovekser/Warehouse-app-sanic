@@ -29,7 +29,7 @@ class ClientSchema(BaseSchema):
 
 
 class ParceltypeSchema(BaseSchema):
-    type_name = fields.Str(required=True)
+    type_name = fields.Str(required=True, validate=validate.Length(min=1))
 
     @pre_load
     def type_input(self, data):

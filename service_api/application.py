@@ -1,6 +1,6 @@
 from sanic.app import Sanic
 
-from service_api.resources.smokeview import SmokeResource
+from service_api.resources.smoke_resource import SmokeResource
 from service_api.resources.client_resource import ClientAllResource, ClientResource
 from service_api.resources.parceltype_resource import ParcelTypeAllResource, ParcelTypeResource
 from service_api.resources.storage_resource import StorageAllResource, StorageResource

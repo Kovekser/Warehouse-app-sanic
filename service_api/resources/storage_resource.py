@@ -7,7 +7,7 @@ from service_api.domain.storage import (get_all_storage,
                                         get_storage_by_id,
                                         delete_one_storage,
                                         update_storage_by_id)
-from service_api.resources.forms import StorageSchema
+from service_api.forms import StorageSchema
 
 
 class StorageAllResource(HTTPMethodView):
@@ -29,7 +29,7 @@ class StorageAllResource(HTTPMethodView):
 
 class StorageResource(HTTPMethodView):
     async def get(self, request, storage_id):
-        storage_data, err = StorageSchema().dump({'id': storage_id})
+        _, err = StorageSchema().dump({'id': storage_id})
         if err:
             return json({'Errors': err}, status=404)
 
@@ -40,7 +40,7 @@ class StorageResource(HTTPMethodView):
         return json({'msg': 'Storage with id {} does not exist'.format(storage_id)}, status=404)
 
     async def delete(self, request, storage_id):
-        storage_data, err = StorageSchema().dump({'id': storage_id})
+        _, err = StorageSchema().dump({'id': storage_id})
         if err:
             return json({'Errors': err}, status=404)
 
@@ -56,7 +56,7 @@ class StorageResource(HTTPMethodView):
         if err:
             return json({'Errors': err}, status=404)
 
-        storage = await update_storage_by_id(json_input)
+        storage = await update_storage_by_id(storage_data)
         if storage:
             return json({'msg': 'Storage {} successfully updated'.format(storage['address'])})
         return json({'msg': 'Storage with id {} does not exist'.format(storage_id)},status=404)
