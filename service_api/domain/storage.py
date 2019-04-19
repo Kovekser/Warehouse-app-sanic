@@ -1,5 +1,3 @@
-import uuid
-
 from service_api.models import Storage
 from service_api.db import select, execute_statement
 
@@ -15,20 +13,20 @@ async def insert_one_storage(row):
 
 
 async def get_storage_by_id(storage_id):
-    id_ = uuid.UUID(storage_id)
-    statement = Storage.select().where(Storage.c.id == id_)
+    statement = Storage.select().where(Storage.c.id == storage_id)
     return await select(statement)
 
 
 async def delete_one_storage(storage_id):
-    id_ = uuid.UUID(storage_id)
-    statement = Storage.delete().where(Storage.c.id == id_)
-    await execute_statement(statement)
+    statement = Storage.delete().\
+        where(Storage.c.id == storage_id).\
+        returning(Storage.c.address)
+    return await select(statement)
 
 
-async def update_storage_by_id(storage_id, data):
-    id_ = uuid.UUID(storage_id)
+async def update_storage_by_id(data):
     statement = Storage.update().\
         values(**data).\
-        where(Storage.c.id == id_)
-    await execute_statement(statement)
+        where(Storage.c.id == data['id']). \
+        returning(Storage.c.address)
+    return await select(statement)

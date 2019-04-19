@@ -1,5 +1,3 @@
-import uuid
-
 from service_api.models import Parceltype
 from service_api.db import select, execute_statement
 
@@ -15,20 +13,20 @@ async def insert_one_type(row):
 
 
 async def get_type_by_id(type_id):
-    id_ = uuid.UUID(type_id)
-    statement = Parceltype.select().where(Parceltype.c.id == id_)
+    statement = Parceltype.select().where(Parceltype.c.id == type_id)
     return await select(statement)
 
 
 async def delete_one_type(type_id):
-    id_ = uuid.UUID(type_id)
-    statement = Parceltype.delete().where(Parceltype.c.id == id_)
-    await execute_statement(statement)
+    statement = Parceltype.delete().\
+        where(Parceltype.c.id == type_id).\
+        returning(Parceltype.c.type_name)
+    return await select(statement)
 
 
-async def update_type_by_id(type_id, data):
-    id_ = uuid.UUID(type_id)
+async def update_type_by_id(data):
     statement = Parceltype.update().\
         values(**data).\
-        where(Parceltype.c.id == id_)
-    await execute_statement(statement)
+        where(Parceltype.c.id == data['id']). \
+        returning(Parceltype.c.type_name)
+    return await select(statement)

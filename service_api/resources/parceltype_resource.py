@@ -7,6 +7,7 @@ from service_api.domain.parsel_type import (get_all_types,
                                             get_type_by_id,
                                             delete_one_type,
                                             update_type_by_id)
+from service_api.forms import ParceltypeSchema
 
 
 class ParcelTypeAllResource(HTTPMethodView):
@@ -17,24 +18,44 @@ class ParcelTypeAllResource(HTTPMethodView):
         return json({"Types": all_types})
 
     async def post(self, request):
-        await insert_one_type(request.json)
+        json_input = request.json
+        type_data, err = ParceltypeSchema().load(json_input)
+        if err:
+            return json({'Errors': err}, status=404)
+        await insert_one_type(type_data)
         return json({'msg': 'Successfully created parcel type'})
 
 
 class ParcelTypeResource(HTTPMethodView):
     async def get(self, request, type_id):
+        _, err = ParceltypeSchema().dump({'id': type_id})
+        if err:
+            return json({'Errors': err}, status=404)
+
         pars_type = await get_type_by_id(type_id)
-        if not pars_type:
-            return json({'msg': 'Parcel type with id {} does not exist'.format(type_id)})
-        pars_type['id'] = str(pars_type['id'])
-        return json({"Parcel_type": pars_type})
+        if pars_type:
+            pars_type['id'] = str(pars_type['id'])
+            return json({"Parcel_type": pars_type})
+        return json({'msg': 'Parcel type with id {} does not exist'.format(type_id)}, status=404)
 
     async def delete(self, request, type_id):
-        pars_type = await get_type_by_id(type_id)
-        await delete_one_type(type_id)
-        return json({'msg': 'Successfully deleted parcel type {}'.format(pars_type['type_name'])})
+        _, err = ParceltypeSchema().dump({'id': type_id})
+        if err:
+            return json({'Errors': err}, status=404)
+
+        result = await delete_one_type(type_id)
+        if result:
+            return json({'msg': 'Successfully deleted parcel type {}'.format(result['type_name'])})
+        return json({'msg': 'Parcel type with id {} does not exist'.format(type_id)}, status=404)
 
     async def put(self, request, type_id):
-        pars_type = await get_type_by_id(type_id)
-        await update_type_by_id(type_id, request.json)
-        return json({'msg': 'Parcel type {} successfully updated'.format(pars_type['type_name'])})
+        json_input = request.json
+        json_input['id'] = type_id
+        type_data, err = ParceltypeSchema().load(json_input)
+        if err:
+            return json({'Errors': err}, status=404)
+
+        result = await update_type_by_id(type_data)
+        if result:
+            return json({'msg': 'Parcel type {} successfully updated'.format(result['type_name'])})
+        return json({'msg': 'Parcel type with id {} does not exist'.format(type_id)}, status=404)
