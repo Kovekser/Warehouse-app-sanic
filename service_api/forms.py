@@ -43,3 +43,40 @@ class StorageSchema(BaseSchema):
     address = fields.Str(required=False)
     max_weight = fields.Int(required=False)
     max_capacity = fields.Int(required=False)
+
+
+class ParcelSchema(BaseSchema):
+    description = fields.Str(required=False)
+    type_id = fields.UUID(required=True)
+    weight = fields.Decimal(required=True)
+    cost = fields.Decimal(required=True)
+    supply_id = fields.UUID(required=True)
+
+    @pre_load
+    def validate_weight(self, data):
+        try:
+            if data['weight'] > 1000:
+                raise ValidationError('Parcel weight can\'t be greater than 1000')
+        except KeyError:
+            pass
+        except TypeError:
+            pass
+
+
+class SupplySchema(BaseSchema):
+    from_storage = fields.UUID(required=True)
+    to_storage = fields.UUID(required=True)
+    status = fields.Str(required=False)
+    client_id = fields.UUID(required=True)
+    send_date = fields.DateTime(required=True, format='%Y-%m-%d')
+    received_date = fields.DateTime(required=False, format='%Y-%m-%d')
+
+    @pre_load
+    def validate_received_date(self, data):
+        try:
+            if data['received_date'] < data['send_date']:
+                raise ValidationError('Receive date can\'t be earlier than send date!')
+        except KeyError:
+            pass
+        except TypeError:
+            pass

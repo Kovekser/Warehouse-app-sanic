@@ -1,5 +1,3 @@
-import uuid
-
 from service_api.models import Supply
 from service_api.db import select, execute_statement
 
@@ -15,20 +13,20 @@ async def insert_one_supply(row):
 
 
 async def get_supply_by_id(supply_id):
-    id_ = uuid.UUID(supply_id)
-    statement = Supply.select().where(Supply.c.id == id_)
+    statement = Supply.select().where(Supply.c.id == supply_id)
     return await select(statement)
 
 
 async def delete_one_supply(supply_id):
-    id_ = uuid.UUID(supply_id)
-    statement = Supply.delete().where(Supply.c.id == id_)
-    await execute_statement(statement)
+    statement = Supply.delete().\
+        where(Supply.c.id == supply_id).\
+        returning(Supply.c.id)
+    return await select(statement)
 
 
-async def update_supply_by_id(supply_id, data):
-    id_ = uuid.UUID(supply_id)
+async def update_supply_by_id(data):
     statement = Supply.update().\
         values(**data).\
-        where(Supply.c.id == id_)
-    await execute_statement(statement)
+        where(Supply.c.id == data['id']).\
+        returning(Supply.c.id)
+    return await select(statement)

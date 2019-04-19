@@ -1,5 +1,3 @@
-import uuid
-
 from service_api.models import Parcel
 from service_api.db import select, execute_statement
 
@@ -15,20 +13,21 @@ async def insert_one_parcel(row):
 
 
 async def get_parcel_by_id(parcel_id):
-    id_ = uuid.UUID(parcel_id)
-    statement = Parcel.select().where(Parcel.c.id == id_)
+    statement = Parcel.select().\
+        where(Parcel.c.id == parcel_id)
     return await select(statement)
 
 
 async def delete_one_parcel(parcel_id):
-    id_ = uuid.UUID(parcel_id)
-    statement = Parcel.delete().where(Parcel.c.id == id_)
-    await execute_statement(statement)
+    statement = Parcel.delete().\
+        where(Parcel.c.id == parcel_id).\
+        returning(Parcel.c.id)
+    return await select(statement)
 
 
-async def update_parcel_by_id(parcel_id, data):
-    id_ = uuid.UUID(parcel_id)
+async def update_parcel_by_id(data):
     statement = Parcel.update().\
         values(**data).\
-        where(Parcel.c.id == id_)
-    await execute_statement(statement)
+        where(Parcel.c.id == data['id']).\
+        returning(Parcel.c.id)
+    return await select(statement)
