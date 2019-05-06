@@ -8,8 +8,6 @@ from service_api.utils.json_loader import JsonLoader
 from service_api.utils.delivery_date import delivery_date
 
 
-# @mock.patch('service_api.utils.path_finder.os.getcwd',
-#             new=mock.Mock(return_value='./tests'))
 class PathFinderTestCase(TestCase):
     @classmethod
     def setUpClass(cls):

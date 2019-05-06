@@ -1,9 +1,6 @@
-import os
 import psycopg2
-from aiopg.sa import create_engine
-from asynctest import TestCase
 
-from service_api.constants import BASIC_DB_CONFIG, DB_CONFIG
+from tests.db_test import BaseTestCase
 from service_api.utils.json_loader import JsonLoader
 from service_api.utils.path_finder import get_abs_path
 from service_api.domain.clients import (get_all_clients,
@@ -14,10 +11,12 @@ from service_api.domain.clients import (get_all_clients,
                                         update_client_by_id)
 
 
-class ClientDomainTestCase(TestCase):
+class ClientDomainTestCase(BaseTestCase):
     @classmethod
-    def setUpClass(cls):
+    async def setUpClass(cls):
         # Some pre-setup data
+        BaseTestCase.setUpClass()
+
         cls.test_client = {
             "id": "31732169-9b7b-4f09-aa1b-7fecb350ab14",
             "name": "John",
@@ -37,42 +36,8 @@ class ClientDomainTestCase(TestCase):
         cls.id_not_exist = '42732169-9b7b-4f09-aa1b-7fecb350ab14'
         cls.data = JsonLoader(get_abs_path('clients.json'))
 
-        # Creating test database
-        con = psycopg2.connect(**BASIC_DB_CONFIG)
-        con.autocommit = True
-        cur = con.cursor()
-        cur.execute("DROP DATABASE IF EXISTS {} ;".format('test_db'))
-        cur.execute("CREATE DATABASE {} WITH OWNER = admin ;".format('test_db'))
-        cur.close()
-
-        # Automatic migration
-        script_dir = os.path.dirname(__file__)
-        LIQUIBASE_COMMAND = """
-            sudo {} --driver={} --classpath={} --changeLogFile={} --url={} --username={} --password={} --logLevel=info {}
-        """
-        liquibase_command = LIQUIBASE_COMMAND.format(
-            os.path.join(script_dir, "../../migrations/liquibase"),
-            "org.postgresql.Driver",
-            os.path.join(script_dir, "../../migrations/jdbcdrivers/postgresql-42.2.5.jar"),
-            os.path.join(script_dir, "../../migrations/changelog.xml"),
-            "jdbc:postgresql://localhost/test_db",
-            'postgres',
-            'admin',
-            "migrate"
-        )
-        os.system(liquibase_command)
-
-    async def test_get_all_tables(self):
-        table_list = ('supply', 'clients', 'parseltype', 'parsel', 'storage')
-        async with create_engine(**DB_CONFIG) as engine:
-            async with engine.acquire() as conn:
-                result = [list(dict(r).values())[0]
-                          async for r in conn.execute("SELECT table_name FROM information_schema.tables \
-                                                              WHERE table_schema='public' ;")]
-        self.assertEqual(len(result), 7)
-        self.assertEqual(sorted(table_list), sorted(result[2:]))
-
     async def test_get_all_clients(self):
+        print('running client tests')
         for row in self.data.loaded_json:
             await insert_one_client(row)
         test_result = await get_all_clients()
@@ -99,9 +64,7 @@ class ClientDomainTestCase(TestCase):
 
     async def test_insert_one_client(self):
         await insert_one_client(next(self.data.loaded_json))
-        async with create_engine(**DB_CONFIG) as engine:
-            async with engine.acquire() as conn:
-                result = [dict(r) async for r in conn.execute("SELECT * FROM clients;")]
+        result = await get_all_clients()
         self.assertEqual(len(result), 1)
         await delete_one_client(self.good_id)
 
@@ -121,7 +84,7 @@ class ClientDomainTestCase(TestCase):
         self.assertEqual(len(result), 0)
 
     async def test_delete_one_client_not_exist(self):
-        result = await delete_one_client(self.good_id)
+        result = await delete_one_client(self.id_not_exist)
         self.assertEqual(result, [])
 
     async def test_update_client_by_id_exist(self):
@@ -131,11 +94,4 @@ class ClientDomainTestCase(TestCase):
         result = await get_all_clients()
         result['id'] = str(result['id'])
         self.assertEqual(result, self.new_client)
-
-    @classmethod
-    def tearDownClass(cls):
-        con = psycopg2.connect(**BASIC_DB_CONFIG)
-        con.autocommit = True
-        cur = con.cursor()
-        cur.execute("DROP DATABASE IF EXISTS {} ;".format('test_db'))
-        cur.close()
+        await delete_all_clients()

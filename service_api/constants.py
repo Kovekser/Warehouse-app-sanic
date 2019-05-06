@@ -23,5 +23,3 @@ BASIC_DB_CONFIG = {
     'password': 'admin',
     'database': 'postgres'
 }
-
-
