@@ -1,6 +1,6 @@
 import psycopg2
 
-from tests.db_test import BaseTestCase
+from tests.db_test.test_base import BaseTestCase
 from service_api.utils.json_loader import JsonLoader
 from service_api.utils.path_finder import get_abs_path
 from service_api.domain.clients import (get_all_clients,
@@ -13,9 +13,9 @@ from service_api.domain.clients import (get_all_clients,
 
 class ClientDomainTestCase(BaseTestCase):
     @classmethod
-    async def setUpClass(cls):
+    def setUpClass(cls):
         # Some pre-setup data
-        BaseTestCase.setUpClass()
+        super(ClientDomainTestCase, cls).setUpClass()
 
         cls.test_client = {
             "id": "31732169-9b7b-4f09-aa1b-7fecb350ab14",
@@ -37,7 +37,6 @@ class ClientDomainTestCase(BaseTestCase):
         cls.data = JsonLoader(get_abs_path('clients.json'))
 
     async def test_get_all_clients(self):
-        print('running client tests')
         for row in self.data.loaded_json:
             await insert_one_client(row)
         test_result = await get_all_clients()
