@@ -59,22 +59,21 @@ class BaseTestCase(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.my_loop = asyncio.new_event_loop()
+        cls.my_loop = asyncio.get_event_loop()
         cls.my_loop.run_until_complete(InitDB.create_test_db())
 
     @classmethod
     def tearDownClass(cls):
+        cls.my_loop = asyncio.get_event_loop()
         cls.my_loop.run_until_complete(InitDB.remove_test_db())
-        cls.my_loop.close()
+        # cls.my_loop.close()
 
     async def test_get_all_tables(self):
-        print('running base test')
         table_list = ('supply', 'clients', 'parseltype', 'parsel', 'storage')
         async with create_engine(**DB_CONFIG) as engine:
             async with engine.acquire() as conn:
                 result = [list(dict(r).values())[0]
                           async for r in conn.execute("SELECT table_name FROM information_schema.tables \
                                                               WHERE table_schema='public' ;")]
-                print(result)
         self.assertEqual(len(result), 7)
         self.assertEqual(sorted(table_list), sorted(result[2:]))

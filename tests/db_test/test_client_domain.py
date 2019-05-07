@@ -1,4 +1,6 @@
 import psycopg2
+import uuid
+from copy import deepcopy
 
 from tests.db_test.test_base import BaseTestCase
 from service_api.utils.json_loader import JsonLoader
@@ -64,7 +66,9 @@ class ClientDomainTestCase(BaseTestCase):
     async def test_insert_one_client(self):
         await insert_one_client(next(self.data.loaded_json))
         result = await get_all_clients()
-        self.assertEqual(len(result), 1)
+        expected = deepcopy(self.test_client)
+        expected['id'] = uuid.UUID(expected['id'])
+        self.assertEqual(result, expected)
         await delete_one_client(self.good_id)
 
     async def test_delete_all_clients(self):
