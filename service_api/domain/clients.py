@@ -24,6 +24,11 @@ async def delete_one_client(client_id):
     return await select(statement)
 
 
+async def delete_all_clients():
+    statement = Clients.delete()
+    await execute_statement(statement)
+
+
 async def update_client_by_id(data):
     statement = Clients.update().\
         values(**data).\

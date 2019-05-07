@@ -1,5 +1,4 @@
 from aiopg.sa import create_engine
-
 from service_api.constants import DB_CONFIG
 
 

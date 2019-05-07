@@ -174,6 +174,8 @@ class ClientResourceTestCase(TestCase):
         self.assertEqual(response.status, 404)
         self.assertEqual(response.json, msg)
 
+    @patch('service_api.resources.client_resource.update_client_by_id',
+           new=CoroutineMock(return_value=[]))
     def test_put_client_resource_id_not_exist(self):
         request, response = app.test_client.put(self.id_not_exist_url, json={
             "address": "3494 gfhfghgfh",

@@ -1,3 +1,4 @@
+import os
 from types import GeneratorType
 from datetime import datetime
 from freezegun import freeze_time
@@ -8,12 +9,11 @@ from service_api.utils.json_loader import JsonLoader
 from service_api.utils.delivery_date import delivery_date
 
 
-@mock.patch('service_api.utils.path_finder.os.getcwd',
-            new=mock.Mock(return_value='./tests'))
 class PathFinderTestCase(TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.correct_path =  "./tests/fixtures/clients.json"
+        cls.correct_path = os.path.abspath("./tests/fixtures/clients.json")
+        cls.correct_path_no_file = os.path.join(os.path.abspath("./tests/fixtures"), "")
 
     def test_find_correct_path_file_name_not_empty(self):
         test_path = path_finder.get_abs_path('clients.json')
@@ -21,7 +21,7 @@ class PathFinderTestCase(TestCase):
 
     def test_find_correct_path_file_name_empty(self):
         test_path = path_finder.get_abs_path()
-        self.assertEqual(test_path, "./tests/fixtures/")
+        self.assertEqual(test_path, self.correct_path_no_file)
 
     def test_raise_exception_wrong_type_arg(self):
         with self.assertRaises(TypeError, msg='Integer is not valid file name'):
@@ -42,7 +42,7 @@ class PathFinderTestCase(TestCase):
 class JsonLoaderClassTestCase(TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.correct_path =  "./tests/fixtures/clients.json"
+        cls.correct_path = "./tests/fixtures/clients.json"
 
     def test_init_error_raise(self):
         with self.assertRaises(TypeError):

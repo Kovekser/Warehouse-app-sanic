@@ -7,7 +7,7 @@ def get_abs_path(file=''):
     depending on flag "file" returns path to fixtures folder
     or to the file.json
     """
-    return os.path.join(os.getcwd(), 'fixtures', file)
+    return os.path.join(os.getcwd(), 'tests/fixtures', file)
 
 
 def get_tab_name(abs_path):
