@@ -5,23 +5,17 @@ from aiopg.sa import create_engine
 
 from service_api.constants import BASIC_DB_CONFIG, DB_CONFIG
 
+
 class InitDB:
 
     @staticmethod
     async def create_test_db():
         # Creating test database
-        # print('Creating db {}'.format(self.__name__))
         async with create_engine(**BASIC_DB_CONFIG) as engine:
             async with engine.acquire() as conn:
                 conn.autocommit = True
                 await conn.execute("DROP DATABASE IF EXISTS {} ;".format('test_db'))
                 await conn.execute("CREATE DATABASE {} WITH OWNER = admin ;".format('test_db'))
-        # con = psycopg2.connect(**BASIC_DB_CONFIG)
-        # con.autocommit = True
-        # cur = con.cursor()
-        # cur.execute("DROP DATABASE IF EXISTS {} ;".format('test_db'))
-        # cur.execute("CREATE DATABASE {} WITH OWNER = admin ;".format('test_db'))
-        # cur.close()
 
         # Automatic migration
         script_dir = os.path.dirname(__file__)
@@ -42,17 +36,10 @@ class InitDB:
 
     @staticmethod
     async def remove_test_db():
-        # print('Removing db {}'.format(self.__name__))
         async with create_engine(**BASIC_DB_CONFIG) as engine:
             async with engine.acquire() as conn:
                 conn.autocommit = True
                 await conn.execute("DROP DATABASE IF EXISTS {} ;".format('test_db'))
-
-        # con = psycopg2.connect(**BASIC_DB_CONFIG)
-        # con.autocommit = True
-        # cur = con.cursor()
-        # cur.execute("DROP DATABASE IF EXISTS {} ;".format('test_db'))
-        # cur.close()
 
 
 class BaseTestCase(TestCase):
@@ -66,7 +53,6 @@ class BaseTestCase(TestCase):
     def tearDownClass(cls):
         cls.my_loop = asyncio.get_event_loop()
         cls.my_loop.run_until_complete(InitDB.remove_test_db())
-        # cls.my_loop.close()
 
     async def test_get_all_tables(self):
         table_list = ('supply', 'clients', 'parseltype', 'parsel', 'storage')

@@ -38,6 +38,9 @@ class ClientDomainTestCase(BaseTestCase):
         cls.id_not_exist = '42732169-9b7b-4f09-aa1b-7fecb350ab14'
         cls.data = JsonLoader(get_abs_path('clients.json'))
 
+    async def setUp(self):
+        await delete_all_clients()
+
     async def test_get_all_clients(self):
         for row in self.data.loaded_json:
             await insert_one_client(row)
@@ -46,14 +49,13 @@ class ClientDomainTestCase(BaseTestCase):
             row['id'] = str(row['id'])
         self.assertEqual(len(test_result), 4)
         self.assertEqual(test_result, list(self.data.loaded_json))
-        await delete_all_clients()
 
     async def test_get_client_by_id_exists(self):
         await insert_one_client(next(self.data.loaded_json))
         test_result = await get_client_by_id(self.good_id)
-        test_result['id'] = str(test_result['id'])
-        self.assertEqual(test_result, self.test_client)
-        await delete_one_client(self.good_id)
+        expected = deepcopy(self.test_client)
+        expected['id'] = uuid.UUID(expected['id'])
+        self.assertEqual(test_result, expected)
 
     async def test_get_client_by_id_not_exists(self):
         test_result = await get_client_by_id(self.id_not_exist)
@@ -69,7 +71,6 @@ class ClientDomainTestCase(BaseTestCase):
         expected = deepcopy(self.test_client)
         expected['id'] = uuid.UUID(expected['id'])
         self.assertEqual(result, expected)
-        await delete_one_client(self.good_id)
 
     async def test_delete_all_clients(self):
         for row in self.data.loaded_json:
@@ -97,4 +98,3 @@ class ClientDomainTestCase(BaseTestCase):
         result = await get_all_clients()
         result['id'] = str(result['id'])
         self.assertEqual(result, self.new_client)
-        await delete_all_clients()
