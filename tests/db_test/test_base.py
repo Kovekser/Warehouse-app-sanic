@@ -10,7 +10,6 @@ class InitDB:
 
     @staticmethod
     async def create_test_db():
-        # Creating test database
         async with create_engine(**BASIC_DB_CONFIG) as engine:
             async with engine.acquire() as conn:
                 conn.autocommit = True
