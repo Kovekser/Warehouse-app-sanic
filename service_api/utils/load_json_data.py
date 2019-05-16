@@ -11,8 +11,8 @@ from service_api.domain.supply import insert_one_supply
 
 
 models_dict = {'Clients': insert_one_client,
-               'Parsel': insert_one_parcel,
-               'Parseltype': insert_one_type,
+               'Parcel': insert_one_parcel,
+               'Parceltype': insert_one_type,
                'Storage': insert_one_storage,
                'Supply': insert_one_supply}
 

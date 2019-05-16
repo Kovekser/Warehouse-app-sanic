@@ -45,7 +45,7 @@ class ClientResourceTestCase(TestCase):
         self.assertEqual(response.status, 200)
         self.assertIsInstance(response.json, dict)
         self.assertIsInstance(response.json['Clients'], list)
-        self.assertEqual(len(*response.json.values()), 4)
+        self.assertEqual(len(*response.json.values()), 6)
 
         for row in response.json['Clients']:
             self.assertIsInstance(row, dict)

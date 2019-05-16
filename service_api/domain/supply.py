@@ -24,6 +24,11 @@ async def delete_one_supply(supply_id):
     return await select(statement)
 
 
+async def delete_all_supply():
+    statement = Supply.delete()
+    await execute_statement(statement)
+
+
 async def update_supply_by_id(data):
     statement = Supply.update().\
         values(**data).\

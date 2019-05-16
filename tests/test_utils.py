@@ -70,7 +70,7 @@ class JsonLoaderClassTestCase(TestCase):
 
     def test_load_json_loads_correctly(self):
         json_row = {
-            "id": "31732169-9b7b-4f09-aa1b-7fecb350ab14",
+            "id": "dcf19a78-b01f-4251-924f-3403df3afdaa",
             "name": "John",
             "email": "johnlara@mail.com",
             "age": 18,
