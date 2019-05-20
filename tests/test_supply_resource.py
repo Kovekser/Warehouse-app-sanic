@@ -41,7 +41,7 @@ class SupplyResourceTestCase(TestCase):
         self.assertEqual(response.status, 200)
         self.assertIsInstance(response.json, dict)
         self.assertIsInstance(response.json['Supply'], list)
-        self.assertEqual(len(*response.json.values()), 7)
+        self.assertEqual(len(*response.json.values()), 8)
 
         for row in response.json['Supply']:
             self.assertIsInstance(row, dict)

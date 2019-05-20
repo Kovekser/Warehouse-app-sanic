@@ -37,7 +37,7 @@ class StorageResourceTestCase(TestCase):
         self.assertEqual(response.status, 200)
         self.assertIsInstance(response.json, dict)
         self.assertIsInstance(response.json['Storages'], list)
-        self.assertEqual(len(*response.json.values()), 6)
+        self.assertEqual(len(*response.json.values()), 7)
 
         for row in response.json['Storages']:
             self.assertIsInstance(row, dict)

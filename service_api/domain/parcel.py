@@ -25,6 +25,11 @@ async def delete_one_parcel(parcel_id):
     return await select(statement)
 
 
+async def delete_all_parcel():
+    statement = Parcel.delete()
+    await execute_statement(statement)
+
+
 async def update_parcel_by_id(data):
     statement = Parcel.update().\
         values(**data).\

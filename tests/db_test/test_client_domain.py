@@ -16,24 +16,23 @@ from service_api.domain.clients import (get_all_clients,
 class ClientDomainTestCase(BaseTestCase):
     @classmethod
     def setUpClass(cls):
-        # Some pre-setup data
         super(ClientDomainTestCase, cls).setUpClass()
 
         cls.test_client = {
-            "id": "31732169-9b7b-4f09-aa1b-7fecb350ab14",
+            "id": "dcf19a78-b01f-4251-924f-3403df3afdaa",
             "name": "John",
             "email": "johnlara@mail.com",
             "age": 18,
             "address": "3073 Derek Drive"
         }
         cls.new_client = {
-            "id": "31732169-9b7b-4f09-aa1b-7fecb350ab14",
+            "id": "dcf19a78-b01f-4251-924f-3403df3afdaa",
             "name": "John Galt",
             "email": "johngalt@mail.com",
             "age": 38,
             "address": "3073 Derek Drive avenue"
         }
-        cls.good_id = '31732169-9b7b-4f09-aa1b-7fecb350ab14'
+        cls.good_id = 'dcf19a78-b01f-4251-924f-3403df3afdaa'
         cls.bad_id = '49732169'
         cls.id_not_exist = '42732169-9b7b-4f09-aa1b-7fecb350ab14'
         cls.data = JsonLoader(get_abs_path('clients.json'))
@@ -47,7 +46,7 @@ class ClientDomainTestCase(BaseTestCase):
         test_result = await get_all_clients()
         for row in test_result:
             row['id'] = str(row['id'])
-        self.assertEqual(len(test_result), 4)
+        self.assertEqual(len(test_result), 6)
         self.assertEqual(test_result, list(self.data.loaded_json))
 
     async def test_get_client_by_id_exists(self):
@@ -75,6 +74,8 @@ class ClientDomainTestCase(BaseTestCase):
     async def test_delete_all_clients(self):
         for row in self.data.loaded_json:
             await insert_one_client(row)
+        result = await get_all_clients()
+        self.assertEqual(len(result), 6)
         await delete_all_clients()
         result = await get_all_clients()
         self.assertEqual(len(result), 0)
@@ -82,6 +83,8 @@ class ClientDomainTestCase(BaseTestCase):
 
     async def test_delete_one_client_exist(self):
         await insert_one_client(next(self.data.loaded_json))
+        result = await get_all_clients()
+        self.assertIsInstance(result, dict)
         result = await delete_one_client(self.good_id)
         self.assertEqual(result['email'], "johnlara@mail.com")
         result = await get_all_clients()
