@@ -19,7 +19,6 @@ from service_api.domain.parcel import (get_all_parcels,
 class ParcelDomainTestCase(BaseTestCase):
     @classmethod
     def setUpClass(cls):
-        # Some pre-setup data
         super(ParcelDomainTestCase, cls).setUpClass()
 
         cls.test_parcel = {
@@ -92,6 +91,11 @@ class ParcelDomainTestCase(BaseTestCase):
     async def test_delete_all_parcel(self):
         for row in self.data.loaded_json:
             await insert_one_parcel(row)
+        result = await get_all_parcels()
+        expected = list(self.data.loaded_json)
+        for i, row in enumerate(expected):
+            expected[i] = {d[0]: t(d[1]) for t, d in zip(self.types, row.items())}
+        self.assertEqual(len(result), 6)
         await delete_all_parcel()
         result = await get_all_parcels()
         self.assertEqual(len(result), 0)
@@ -99,6 +103,8 @@ class ParcelDomainTestCase(BaseTestCase):
 
     async def test_delete_one_parcel_exist(self):
         await insert_one_parcel(next(self.data.loaded_json))
+        result = await get_parcel_by_id(self.good_id)
+        self.assertIsInstance(result, dict)
         result = await delete_one_parcel(self.good_id)
         expected = uuid.UUID(self.good_id)
         self.assertEqual(result['id'], expected)

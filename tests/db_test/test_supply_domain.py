@@ -19,7 +19,6 @@ from service_api.domain.supply import (get_all_supply,
 class SupplyDomainTestCase(BaseTestCase):
     @classmethod
     def setUpClass(cls):
-        # Some pre-setup data
         super(SupplyDomainTestCase, cls).setUpClass()
 
         cls.test_supply = {
@@ -89,6 +88,8 @@ class SupplyDomainTestCase(BaseTestCase):
     async def test_delete_all_supply(self):
         for row in self.data.loaded_json:
             await insert_one_supply(row)
+        result = await get_all_supply()
+        self.assertEqual(len(result), 8)
         await delete_all_supply()
         result = await get_all_supply()
         self.assertEqual(len(result), 0)
@@ -96,6 +97,8 @@ class SupplyDomainTestCase(BaseTestCase):
 
     async def test_delete_one_supply_exist(self):
         await insert_one_supply(next(self.data.loaded_json))
+        result = await get_all_supply()
+        self.assertIsInstance(result, dict)
         result = await delete_one_supply(self.good_id)
         expected = uuid.UUID(self.good_id)
         self.assertEqual(result['id'], expected)

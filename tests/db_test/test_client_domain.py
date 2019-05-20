@@ -16,7 +16,6 @@ from service_api.domain.clients import (get_all_clients,
 class ClientDomainTestCase(BaseTestCase):
     @classmethod
     def setUpClass(cls):
-        # Some pre-setup data
         super(ClientDomainTestCase, cls).setUpClass()
 
         cls.test_client = {
@@ -75,6 +74,8 @@ class ClientDomainTestCase(BaseTestCase):
     async def test_delete_all_clients(self):
         for row in self.data.loaded_json:
             await insert_one_client(row)
+        result = await get_all_clients()
+        self.assertEqual(len(result), 6)
         await delete_all_clients()
         result = await get_all_clients()
         self.assertEqual(len(result), 0)
@@ -82,6 +83,8 @@ class ClientDomainTestCase(BaseTestCase):
 
     async def test_delete_one_client_exist(self):
         await insert_one_client(next(self.data.loaded_json))
+        result = await get_all_clients()
+        self.assertIsInstance(result, dict)
         result = await delete_one_client(self.good_id)
         self.assertEqual(result['email'], "johnlara@mail.com")
         result = await get_all_clients()

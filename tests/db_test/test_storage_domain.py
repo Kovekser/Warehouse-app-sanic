@@ -16,7 +16,6 @@ from service_api.domain.storage import (get_all_storage,
 class StorageDomainTestCase(BaseTestCase):
     @classmethod
     def setUpClass(cls):
-        # Some pre-setup data
         super(StorageDomainTestCase, cls).setUpClass()
 
         cls.test_storage = {
@@ -73,6 +72,8 @@ class StorageDomainTestCase(BaseTestCase):
     async def test_delete_all_storage(self):
         for row in self.data.loaded_json:
             await insert_one_storage(row)
+        result = await get_all_storage()
+        self.assertEqual(len(result), 7)
         await delete_all_storage()
         result = await get_all_storage()
         self.assertEqual(len(result), 0)
@@ -80,6 +81,8 @@ class StorageDomainTestCase(BaseTestCase):
 
     async def test_delete_one_storage_exist(self):
         await insert_one_storage(next(self.data.loaded_json))
+        result = await get_all_storage()
+        self.assertIsInstance(result, dict)
         result = await delete_one_storage(self.good_id)
         self.assertEqual(result['address'], '197D Klochkovska str.')
         result = await get_all_storage()

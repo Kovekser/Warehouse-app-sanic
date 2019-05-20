@@ -17,7 +17,6 @@ from service_api.domain.parsel_type import (get_all_types,
 class ParselTypeDomainTestCase(BaseTestCase):
     @classmethod
     def setUpClass(cls):
-        # Some pre-setup data
         super(ParselTypeDomainTestCase, cls).setUpClass()
 
         cls.test_type = {
@@ -70,6 +69,8 @@ class ParselTypeDomainTestCase(BaseTestCase):
     async def test_delete_all_types(self):
         for row in self.data.loaded_json:
             await insert_one_type(row)
+        result = await get_all_types()
+        self.assertEqual(len(result), 5)
         await delete_all_type()
         result = await get_all_types()
         self.assertEqual(len(result), 0)
@@ -77,6 +78,8 @@ class ParselTypeDomainTestCase(BaseTestCase):
 
     async def test_delete_one_type_exist(self):
         await insert_one_type(next(self.data.loaded_json))
+        result = await get_all_types()
+        self.assertIsInstance(result, dict)
         result = await delete_one_type(self.good_id)
         self.assertEqual(result['type_name'], 'documents')
         result = await get_all_types()
