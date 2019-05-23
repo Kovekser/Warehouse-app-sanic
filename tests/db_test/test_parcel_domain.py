@@ -13,7 +13,8 @@ from service_api.domain.parcel import (get_all_parcels,
                                        delete_all_parcel,
                                        get_parcel_by_id,
                                        delete_one_parcel,
-                                       update_parcel_by_id)
+                                       update_parcel_by_id,
+                                       get_parcel_by_type_and_storage)
 
 
 class ParcelDomainTestCase(BaseTestCase):
@@ -63,7 +64,7 @@ class ParcelDomainTestCase(BaseTestCase):
         expected = list(self.data.loaded_json)
         for i, row in enumerate(expected):
             expected[i] = {d[0]: t(d[1]) for t, d in zip(self.types, row.items())}
-        self.assertEqual(len(test_result), 6)
+        self.assertEqual(len(test_result), 7)
         self.assertEqual(test_result, expected)
 
     async def test_get_parcel_by_id_exists(self):
@@ -95,7 +96,7 @@ class ParcelDomainTestCase(BaseTestCase):
         expected = list(self.data.loaded_json)
         for i, row in enumerate(expected):
             expected[i] = {d[0]: t(d[1]) for t, d in zip(self.types, row.items())}
-        self.assertEqual(len(result), 6)
+        self.assertEqual(len(result), 7)
         await delete_all_parcel()
         result = await get_all_parcels()
         self.assertEqual(len(result), 0)
@@ -123,3 +124,60 @@ class ParcelDomainTestCase(BaseTestCase):
         expected = {d[0]: t(d[1]) for t, d in zip(self.types, expected.items())}
         self.assertEqual(updated_result['id'], expected['id'])
         self.assertEqual(get_result, expected)
+
+    async def test_get_parcel_by_type_and_storage_db_valid_data_range(self):
+        for row in self.data.loaded_json:
+            await insert_one_parcel(row)
+        result = await get_parcel_by_type_and_storage(
+            parcel_type='medium_box',
+            storage='5782c996-d0d0-4e4f-895e-e4a98f26c65f',
+            date=['2019-04-22', '2019-04-10']
+        )
+        self.assertIsInstance(result, list)
+        self.assertEqual(len(result), 2)
+
+    async def test_get_parcel_by_type_and_storage_db_valid_data_one(self):
+        for row in self.data.loaded_json:
+            await insert_one_parcel(row)
+        result = await get_parcel_by_type_and_storage(
+            parcel_type='medium_box',
+            storage='5782c996-d0d0-4e4f-895e-e4a98f26c65f',
+            date=['2019-04-16 07:10:55.85952']
+        )
+        self.assertIsInstance(result, dict)
+        self.assertEqual(len(result), 7)
+        self.assertIn('parcel_id', result)
+        self.assertIn('description', result)
+        self.assertIn('cost', result)
+        self.assertIn('type_name', result)
+        self.assertIn('client_name', result)
+        self.assertIn('address', result)
+        self.assertIn('received_date', result)
+
+    async def test_get_parcel_by_type_and_storage_db_date_empty(self):
+        for row in self.data.loaded_json:
+            await insert_one_parcel(row)
+        result = await get_parcel_by_type_and_storage(
+            parcel_type='medium_box',
+            storage='5782c996-d0d0-4e4f-895e-e4a98f26c65f',
+            date=None
+        )
+        self.assertIsInstance(result, list)
+        self.assertEqual(len(result), 2)
+
+    async def test_get_parcel_by_type_and_storage_db_empty(self):
+        for row in self.data.loaded_json:
+            await insert_one_parcel(row)
+        test_cases=[{'parcel_type': 'dummy',
+                     'storage': '5782c996-d0d0-4e4f-895e-e4a98f26c65f',
+                     'date': ['2019-04-16 07:10:55.85952']},
+                    {'parcel_type': 'medium_box',
+                     'storage': '5782c996-d0d0-4e4f-895e-e4a98f26c65f',
+                     'date': ['2029-04-16 07:10:55.85952']},
+                    {'parcel_type': 'medium_box',
+                     'storage': '1234c996-d0d0-4e4f-895e-e4a98f26c65f',
+                     'date': ['2019-04-16 07:10:55.85952']}
+        ]
+        for test_case in test_cases:
+            result = await get_parcel_by_type_and_storage(**test_case)
+            self.assertEqual(result, [])

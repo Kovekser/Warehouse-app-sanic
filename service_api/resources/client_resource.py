@@ -8,14 +8,13 @@ from service_api.domain.clients import (get_all_clients,
                                         delete_one_client,
                                         update_client_by_id)
 from service_api.forms import ClientSchema
+from service_api.utils.response_utils import map_response
 
 
 class ClientAllResource(HTTPMethodView):
     async def get(self, request):
         all_clients = await get_all_clients()
-        for row in all_clients:
-            row['id'] = str(row['id'])
-        return json({"Clients": all_clients})
+        return json({"Clients": map_response(all_clients)})
 
     async def post(self, request):
         json_input = request.json
@@ -35,8 +34,7 @@ class ClientResource(HTTPMethodView):
 
         client = await get_client_by_id(client_id)
         if client:
-            client['id'] = str(client['id'])
-            return json({"Client": client})
+            return json({"Client": map_response(client)})
         return json({'msg': 'Client with id {} does not exist'.format(client_id)}, status=404)
 
     async def delete(self, request, client_id):

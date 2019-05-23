@@ -8,16 +8,13 @@ from service_api.domain.supply import (get_all_supply,
                                        delete_one_supply,
                                        update_supply_by_id)
 from service_api.forms import SupplySchema
+from service_api.utils.response_utils import map_response
 
 
 class SupplyAllResource(HTTPMethodView):
     async def get(self, request):
         all_supply = await get_all_supply()
-        for row in all_supply:
-            for k in row:
-                if isinstance(row[k], uuid.UUID):
-                    row[k] = str(row[k])
-        return json({"Supply": all_supply})
+        return json({"Supply": map_response(all_supply)})
 
     async def post(self, request):
         json_input = request.json
@@ -37,10 +34,7 @@ class SupplyResource(HTTPMethodView):
 
         supply = await get_supply_by_id(supply_id)
         if supply:
-            for k in supply:
-                if isinstance(supply[k], uuid.UUID):
-                    supply[k] = str(supply[k])
-            return json({"Supply": supply})
+            return json({"Supply": map_response(supply)})
         return json({'msg': 'Supply with id {} does not exist'.format(supply_id)}, status=404)
 
 

@@ -35,4 +35,4 @@ test:
 
 .PHONY: report_test
 report_test:
-	coverage report --omit=/usr/*
+	coverage report -m --omit=/usr/*

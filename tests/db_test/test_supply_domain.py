@@ -60,7 +60,7 @@ class SupplyDomainTestCase(BaseTestCase):
         expected = list(self.data.loaded_json)
         for i, row in enumerate(expected):
             expected[i] = {d[0]: t(d[1]) for t, d in zip(self.types, row.items())}
-        self.assertEqual(len(test_result), 8)
+        self.assertEqual(len(test_result), 9)
         self.assertEqual(test_result, expected)
 
     async def test_get_supply_by_id_exists(self):
@@ -89,7 +89,7 @@ class SupplyDomainTestCase(BaseTestCase):
         for row in self.data.loaded_json:
             await insert_one_supply(row)
         result = await get_all_supply()
-        self.assertEqual(len(result), 8)
+        self.assertEqual(len(result), 9)
         await delete_all_supply()
         result = await get_all_supply()
         self.assertEqual(len(result), 0)

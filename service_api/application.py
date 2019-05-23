@@ -4,7 +4,7 @@ from service_api.resources.smoke_resource import SmokeResource
 from service_api.resources.client_resource import ClientAllResource, ClientResource
 from service_api.resources.parceltype_resource import ParcelTypeAllResource, ParcelTypeResource
 from service_api.resources.storage_resource import StorageAllResource, StorageResource
-from service_api.resources.parcel_resource import ParcelAllResource, ParcelResource
+from service_api.resources.parcel_resource import ParcelAllResource, ParcelResource, ParcelQueryResource
 from service_api.resources.supply_resource import SupplyAllResource, SupplyResource
 
 
@@ -23,6 +23,7 @@ def create_app():
 
     app.add_route(ParcelAllResource().as_view(), "/parcel")
     app.add_route(ParcelResource().as_view(), "/parcel/<parcel_id>")
+    app.add_route(ParcelQueryResource().as_view(), "/parcel/<parcel_type>/<storage_id>")
 
     app.add_route(SupplyAllResource().as_view(), "/supply")
     app.add_route(SupplyResource().as_view(), "/supply/<supply_id>")

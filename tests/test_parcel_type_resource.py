@@ -1,14 +1,15 @@
 import json
-from asynctest import TestCase, CoroutineMock, patch
+from asynctest import CoroutineMock, patch
+from uuid import UUID
 
-from service_api.application import app
+from tests import BaseTest
 
 
-class ParcelTypeResourceTestCase(TestCase):
+class ParcelTypeResourceTestCase(BaseTest):
     with open('./tests/fixtures/parceltype.json') as f:
         select_all_data = json.load(f)
     one_parcel_type = {
-        "id": "f538ef51-c3f9-4fa9-a539-ca49c5fc81a8",
+        "id": UUID("f538ef51-c3f9-4fa9-a539-ca49c5fc81a8"),
         "type_name": "letter"
     }
 
@@ -22,7 +23,7 @@ class ParcelTypeResourceTestCase(TestCase):
     @patch('service_api.resources.parceltype_resource.get_all_types',
            new=CoroutineMock(return_value=[]))
     def test_get_all_parceltype_resource_empty_table(self):
-        request, response = app.test_client.get(self.bold_url)
+        request, response = self.app.test_client.get(self.bold_url)
         self.assertEqual(response.status, 200)
         self.assertEqual(response.json, {'Types': []})
 
@@ -30,7 +31,7 @@ class ParcelTypeResourceTestCase(TestCase):
            new=CoroutineMock(return_value=select_all_data))
     def test_get_all_parcel_types_resource_not_empty(self):
         row_keys = ("id", "type_name")
-        request, response = app.test_client.get(self.bold_url)
+        request, response = self.app.test_client.get(self.bold_url)
 
         self.assertEqual(response.status, 200)
         self.assertIsInstance(response.json, dict)
@@ -44,7 +45,7 @@ class ParcelTypeResourceTestCase(TestCase):
     @patch('service_api.resources.parceltype_resource.insert_one_type',
            new=CoroutineMock(return_value=[]))
     def test_post_one_parcel_type_resource_valid(self):
-        request, response = app.test_client.post(self.bold_url, json={
+        request, response = self.app.test_client.post(self.bold_url, json={
             "id": "f538ef51-c3f9-4fa9-a539-ca49c5fc81a8",
             "type_name": "letter"
         })
@@ -54,7 +55,7 @@ class ParcelTypeResourceTestCase(TestCase):
     @patch('service_api.resources.parceltype_resource.insert_one_type',
            new=CoroutineMock(return_value=[]))
     def test_post_one_parcel_type_resource_bad_id(self):
-        request, response = app.test_client.post(self.bold_url, json={
+        request, response = self.app.test_client.post(self.bold_url, json={
             "id": "123",
             "type_name": "letter"
         })
@@ -66,7 +67,7 @@ class ParcelTypeResourceTestCase(TestCase):
     @patch('service_api.resources.parceltype_resource.insert_one_type',
            new=CoroutineMock(return_value=[]))
     def test_post_one_parcel_type_resource_no_id(self):
-        request, response = app.test_client.post(self.bold_url, json={
+        request, response = self.app.test_client.post(self.bold_url, json={
             "type_name": "letter"
         })
         msg = {'Errors': {'id': ['Missing data for required field.']}}
@@ -77,7 +78,7 @@ class ParcelTypeResourceTestCase(TestCase):
     @patch('service_api.resources.parceltype_resource.insert_one_type',
            new=CoroutineMock(return_value=[]))
     def test_post_one_parcel_type_resource_no_type(self):
-        request, response = app.test_client.post(self.bold_url, json={
+        request, response = self.app.test_client.post(self.bold_url, json={
             "id": "f538ef51-c3f9-4fa9-a539-ca49c5fc81a8"
         })
         msg = {'Errors': {'type_name': ['Missing data for required field.']}}
@@ -88,7 +89,7 @@ class ParcelTypeResourceTestCase(TestCase):
     @patch('service_api.resources.parceltype_resource.insert_one_type',
            new=CoroutineMock(return_value=[]))
     def test_post_one_parcel_type_resource_type_empty(self):
-        request, response = app.test_client.post(self.bold_url, json={
+        request, response = self.app.test_client.post(self.bold_url, json={
             "id": "f538ef51-c3f9-4fa9-a539-ca49c5fc81a8",
             "type_name": ""
         })
@@ -100,7 +101,7 @@ class ParcelTypeResourceTestCase(TestCase):
     @patch('service_api.resources.parceltype_resource.insert_one_type',
            new=CoroutineMock(return_value=[]))
     def test_post_one_parcel_type_resource_no_type_no_id(self):
-        request, response = app.test_client.post(self.bold_url, json={})
+        request, response = self.app.test_client.post(self.bold_url, json={})
         msg = {'Errors': {'id': ['Missing data for required field.'],
                           'type_name': ['Missing data for required field.']}}
 
@@ -110,7 +111,7 @@ class ParcelTypeResourceTestCase(TestCase):
     @patch('service_api.resources.parceltype_resource.insert_one_type',
            new=CoroutineMock(return_value=[]))
     def test_post_one_parcel_type_resource_bad_id_no_type(self):
-        request, response = app.test_client.post(self.bold_url, json={
+        request, response = self.app.test_client.post(self.bold_url, json={
             "id": "123"
         })
         msg = {'Errors': {'id': ['Not a valid UUID.'],
@@ -122,14 +123,14 @@ class ParcelTypeResourceTestCase(TestCase):
     @patch('service_api.resources.parceltype_resource.delete_one_type',
            new=CoroutineMock(return_value={'type_name': 'letter'}))
     def test_delete_one_parcel_type_resource_valid_id(self):
-        request, response = app.test_client.delete(self.url)
+        request, response = self.app.test_client.delete(self.url)
         self.assertEqual(response.status, 200)
         self.assertEqual(response.json, {'msg': 'Successfully deleted parcel type letter'})
 
     @patch('service_api.resources.parceltype_resource.delete_one_type',
            new=CoroutineMock(return_value=[]))
     def test_delete_one_parcel_type_resource_bad_id(self):
-        request, response = app.test_client.delete(self.bad_url)
+        request, response = self.app.test_client.delete(self.bad_url)
         msg = {'Errors': {'_schema': [['badly formed hexadecimal UUID string']]}}
 
         self.assertEqual(response.status, 404)
@@ -138,7 +139,7 @@ class ParcelTypeResourceTestCase(TestCase):
     @patch('service_api.resources.parceltype_resource.delete_one_type',
            new=CoroutineMock(return_value=[]))
     def test_delete_one_parcel_type_resource_id_not_exist(self):
-        request, response = app.test_client.delete(self.id_not_exist_url)
+        request, response = self.app.test_client.delete(self.id_not_exist_url)
         msg = {'msg': 'Parcel type with id f384a7d2-58a5-47f6-9f23-92b8d0d4dae8 does not exist'}
 
         self.assertEqual(response.status, 404)
@@ -147,14 +148,14 @@ class ParcelTypeResourceTestCase(TestCase):
     @patch('service_api.resources.parceltype_resource.update_type_by_id',
            new=CoroutineMock(return_value={'type_name': 'important letter'}))
     def test_put_parcel_type_resource_valid(self):
-        request, response = app.test_client.put(self.url, json={'type_name': 'important letter'})
+        request, response = self.app.test_client.put(self.url, json={'type_name': 'important letter'})
         self.assertEqual(response.status, 200)
         self.assertEqual(response.json, {'msg': 'Parcel type important letter successfully updated'})
 
     @patch('service_api.resources.parceltype_resource.update_type_by_id',
            new=CoroutineMock(return_value=[]))
     def test_put_parcel_type_resource_bad_id(self):
-        request, response = app.test_client.put(self.bad_url, json={'type_name': 'important letter'})
+        request, response = self.app.test_client.put(self.bad_url, json={'type_name': 'important letter'})
         msg = {'Errors': {'id': ['Not a valid UUID.']}}
 
         self.assertEqual(response.status, 404)
@@ -163,8 +164,8 @@ class ParcelTypeResourceTestCase(TestCase):
     @patch('service_api.resources.parceltype_resource.update_type_by_id',
            new=CoroutineMock(return_value=[]))
     def test_put_parcel_type_resource_id_not_exist(self):
-        request, response = app.test_client.put(self.id_not_exist_url,
-                                                json={'type_name': 'important letter'})
+        request, response = self.app.test_client.put(self.id_not_exist_url,
+                                                     json={'type_name': 'important letter'})
         msg = {'msg': 'Parcel type with id f384a7d2-58a5-47f6-9f23-92b8d0d4dae8 does not exist'}
 
         self.assertEqual(response.status, 404)
@@ -173,7 +174,7 @@ class ParcelTypeResourceTestCase(TestCase):
     @patch('service_api.resources.parceltype_resource.update_type_by_id',
            new=CoroutineMock(return_value={'type_name': 'important letter'}))
     def test_put_parcel_type_resource_no_type(self):
-        request, response = app.test_client.put(self.url, json={})
+        request, response = self.app.test_client.put(self.url, json={})
         msg = {'Errors': {'type_name': ['Missing data for required field.']}}
 
         self.assertEqual(response.status, 404)
@@ -182,7 +183,7 @@ class ParcelTypeResourceTestCase(TestCase):
     @patch('service_api.resources.parceltype_resource.update_type_by_id',
            new=CoroutineMock(return_value={'type_name': 'important letter'}))
     def test_put_parcel_type_resource_no_type_bad_id(self):
-        request, response = app.test_client.put(self.bad_url, json={})
+        request, response = self.app.test_client.put(self.bad_url, json={})
         msg = {'Errors': {'id': ['Not a valid UUID.'],
                           'type_name': ['Missing data for required field.']}}
 
@@ -192,7 +193,7 @@ class ParcelTypeResourceTestCase(TestCase):
     @patch('service_api.resources.parceltype_resource.get_type_by_id',
            new=CoroutineMock(return_value=one_parcel_type))
     def test_get_parcel_type_by_id_exists_resource(self):
-        request, response = app.test_client.get(self.url)
+        request, response = self.app.test_client.get(self.url)
         type_by_id = {
             "Parcel_type": {
                 "id": "f538ef51-c3f9-4fa9-a539-ca49c5fc81a8",
@@ -206,7 +207,7 @@ class ParcelTypeResourceTestCase(TestCase):
     @patch('service_api.resources.parceltype_resource.get_type_by_id',
            new=CoroutineMock(return_value=[]))
     def test_get_parcel_type_by_id_not_exists_resource(self):
-        request, response = app.test_client.get(self.id_not_exist_url)
+        request, response = self.app.test_client.get(self.id_not_exist_url)
         msg = {'msg': 'Parcel type with id f384a7d2-58a5-47f6-9f23-92b8d0d4dae8 does not exist'}
 
         self.assertEqual(response.status, 404)
@@ -215,7 +216,7 @@ class ParcelTypeResourceTestCase(TestCase):
     @patch('service_api.resources.parceltype_resource.get_type_by_id',
            new=CoroutineMock(return_value=[]))
     def test_get_parcel_type_by_id_resource_bad_id(self):
-        request, response = app.test_client.get(self.bad_url)
+        request, response = self.app.test_client.get(self.bad_url)
         msg = {'Errors': {'_schema': [['badly formed hexadecimal UUID string']]}}
 
         self.assertEqual(response.status, 404)

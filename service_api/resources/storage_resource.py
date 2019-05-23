@@ -8,14 +8,13 @@ from service_api.domain.storage import (get_all_storage,
                                         delete_one_storage,
                                         update_storage_by_id)
 from service_api.forms import StorageSchema
+from service_api.utils.response_utils import map_response
 
 
 class StorageAllResource(HTTPMethodView):
     async def get(self, request):
         all_storage = await get_all_storage()
-        for row in all_storage:
-            row['id'] = str(row['id'])
-        return json({"Storages": all_storage})
+        return json({"Storages": map_response(all_storage)})
 
     async def post(self, request):
         json_input = request.json
@@ -35,8 +34,7 @@ class StorageResource(HTTPMethodView):
 
         storage = await get_storage_by_id(storage_id)
         if storage:
-            storage['id'] = str(storage['id'])
-            return json({"Storage": storage})
+            return json({"Storage": map_response(storage)})
         return json({'msg': 'Storage with id {} does not exist'.format(storage_id)}, status=404)
 
     async def delete(self, request, storage_id):

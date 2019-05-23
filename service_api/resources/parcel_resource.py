@@ -7,18 +7,16 @@ from service_api.domain.parcel import (get_all_parcels,
                                        insert_one_parcel,
                                        get_parcel_by_id,
                                        delete_one_parcel,
-                                       update_parcel_by_id)
+                                       update_parcel_by_id,
+                                       get_parcel_by_type_and_storage)
 from service_api.forms import ParcelSchema
+from service_api.utils.response_utils import map_response
 
 
 class ParcelAllResource(HTTPMethodView):
     async def get(self, request):
         all_parcel = await get_all_parcels()
-        for row in all_parcel:
-            for k in row:
-                if isinstance(row[k], uuid.UUID):
-                    row[k] = str(row[k])
-        return json({"Parcels": all_parcel})
+        return json({"Parcels": map_response(all_parcel)})
 
     async def post(self, request):
         json_input = request.json
@@ -38,10 +36,7 @@ class ParcelResource(HTTPMethodView):
 
         parcel = await get_parcel_by_id(parcel_id)
         if parcel:
-            for k in parcel:
-                if isinstance(parcel[k], uuid.UUID):
-                    parcel[k] = str(parcel[k])
-            return json({"Parcel": parcel})
+            return json({"Parcel": map_response(parcel)})
         return json({'msg': 'Parcel with id {} does not exist'.format(parcel_id)}, status=404)
 
     async def delete(self, request, parcel_id):
@@ -65,3 +60,26 @@ class ParcelResource(HTTPMethodView):
         if result:
             return json({'msg': 'Parcel {} successfully updated'.format(result['id'])})
         return json({'msg': 'Parcel with id {} does not exist'.format(parcel_id)}, status=404)
+
+
+class ParcelQueryResource(HTTPMethodView):
+    async def get(self, request, parcel_type, storage_id):
+        """ Select parcels from database with pre-defined parameters:
+        param parcel_type (str): name of parcel type
+        param storage_id (str): UUID of storage received the parcel
+        param request: request.json:
+        "date" (optional) is date of request. Can be: empty - returns all parcels, single - returns parcels for one day,
+                                    date range - returns parcels for the period
+        return: list of parcels (if there are more than 1 parcels otherwise dict) and total cost of parcels.
+        """
+        _, err = ParcelSchema().dump({'id': storage_id})
+        if err:
+            return json({'Errors': err}, status=404)
+        date = request.args['date'] if 'date' in request.args else None
+
+        parcels = await get_parcel_by_type_and_storage(parcel_type, storage_id, date)
+        if parcels:
+            total_cost = sum(i['cost'] for i in parcels) if isinstance(parcels, list) else parcels['cost']
+
+            return json({'parcels': map_response(parcels), 'total_cost': total_cost}, status=200)
+        return json({'parcels': parcels, 'total_cost': 0}, status=200)
