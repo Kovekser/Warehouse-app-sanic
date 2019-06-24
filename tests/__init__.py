@@ -1,9 +1,10 @@
 from asynctest import TestCase
+
 from service_api.application import app
 
 
-class BaseTest(TestCase):
+class BaseTestCase(TestCase):
 
     @property
-    def app(self):
-        return app
+    def test_client(self):
+        return app.test_client

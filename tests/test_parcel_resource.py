@@ -6,10 +6,10 @@ import calendar
 from decimal import Decimal
 from copy import deepcopy
 
-from tests import BaseTest
+from tests import BaseTestCase
 
 
-class ParcelResourceTestCase(BaseTest):
+class ParcelResourceTestCaseCase(BaseTestCase):
     with open('./tests/fixtures/parcel.json') as f:
         select_all_data = json.load(f)
     one_parcel = {
@@ -31,7 +31,7 @@ class ParcelResourceTestCase(BaseTest):
     @patch('service_api.resources.parcel_resource.get_all_parcels',
            new=CoroutineMock(return_value=[]))
     def test_get_all_parcel_resource_empty_table(self):
-        request, response = self.app.test_client.get(self.bold_url)
+        request, response = self.test_client.get(self.bold_url)
         self.assertEqual(response.status, 200)
         self.assertEqual(response.json, {"Parcels": []})
 
@@ -39,7 +39,7 @@ class ParcelResourceTestCase(BaseTest):
            new=CoroutineMock(return_value=select_all_data))
     def test_get_all_parcels_resource_not_empty(self):
         row_keys = ("id", "description", "type_id", "weight", "cost", "supply_id")
-        request, response = self.app.test_client.get(self.bold_url)
+        request, response = self.test_client.get(self.bold_url)
 
         self.assertEqual(response.status, 200)
         self.assertIsInstance(response.json, dict)
@@ -53,14 +53,17 @@ class ParcelResourceTestCase(BaseTest):
     @patch('service_api.resources.parcel_resource.insert_one_parcel',
            new=CoroutineMock(return_value=[]))
     def test_post_one_parcel_resource_valid(self):
-        request, response = self.app.test_client.post(self.bold_url, json={
-            "id": "d384a7d2-58a5-47f6-9f23-92b8d0d4dae8",
-            "description": "Food",
-            "type_id": "d8134182-6cbf-4aba-9cbe-4a3396ad430c",
-            "weight": 61,
-            "cost": 16243,
-            "supply_id": "3ac93c38-7114-43dd-810a-a11384be3fd8"
-        })
+        request, response = self.test_client.post(
+            self.bold_url,
+            json={
+                "id": "d384a7d2-58a5-47f6-9f23-92b8d0d4dae8",
+                "description": "Food",
+                "type_id": "d8134182-6cbf-4aba-9cbe-4a3396ad430c",
+                "weight": 61,
+                "cost": 16243,
+                "supply_id": "3ac93c38-7114-43dd-810a-a11384be3fd8"
+            }
+        )
 
         self.assertEqual(response.status, 200)
         self.assertEqual(response.json, {'msg': 'Successfully created parcel'})
@@ -68,14 +71,17 @@ class ParcelResourceTestCase(BaseTest):
     @patch('service_api.resources.parcel_resource.insert_one_parcel',
            new=CoroutineMock(return_value=[]))
     def test_post_one_parcel_resource_bad_types(self):
-        request, response = self.app.test_client.post(self.bold_url, json={
-            "id": "123",
-            "description": 1111,
-            "type_id": "",
-            "weight": "",
-            "cost": "",
-            "supply_id": ""
-        })
+        request, response = self.test_client.post(
+            self.bold_url,
+            json={
+                "id": "123",
+                "description": 1111,
+                "type_id": "",
+                "weight": "",
+                "cost": "",
+                "supply_id": ""
+            }
+        )
         msg = {
             'Errors': {
                 'cost': ['Not a valid number.'],
@@ -93,7 +99,7 @@ class ParcelResourceTestCase(BaseTest):
     @patch('service_api.resources.parcel_resource.insert_one_parcel',
            new=CoroutineMock(return_value=[]))
     def test_post_one_parcel_resource_no_required(self):
-        request, response = self.app.test_client.post(self.bold_url, json={})
+        request, response = self.test_client.post(self.bold_url, json={})
         msg = {
             'Errors': {
                 'cost': ['Missing data for required field.'],
@@ -110,14 +116,17 @@ class ParcelResourceTestCase(BaseTest):
     @patch('service_api.resources.parcel_resource.insert_one_parcel',
            new=CoroutineMock(return_value=[]))
     def test_post_one_parcel_resource_bad_weight(self):
-        request, response = self.app.test_client.post(self.bold_url, json={
-            "id": "d384a7d2-58a5-47f6-9f23-92b8d0d4dae8",
-            "description": "Food",
-            "type_id": "d8134182-6cbf-4aba-9cbe-4a3396ad430c",
-            "weight": 2000,
-            "cost": 16243,
-            "supply_id": "3ac93c38-7114-43dd-810a-a11384be3fd8"
-        })
+        request, response = self.test_client.post(
+            self.bold_url,
+            json={
+                "id": "d384a7d2-58a5-47f6-9f23-92b8d0d4dae8",
+                "description": "Food",
+                "type_id": "d8134182-6cbf-4aba-9cbe-4a3396ad430c",
+                "weight": 2000,
+                "cost": 16243,
+                "supply_id": "3ac93c38-7114-43dd-810a-a11384be3fd8"
+            }
+        )
         msg = {'Errors': {'_schema': ["Parcel weight can't be greater than 1000"]}}
 
         self.assertEqual(response.status, 404)
@@ -126,7 +135,7 @@ class ParcelResourceTestCase(BaseTest):
     @patch('service_api.resources.parcel_resource.delete_one_parcel',
            new=CoroutineMock(return_value={'id': 'd384a7d2-58a5-47f6-9f23-92b8d0d4dae8'}))
     def test_delete_one_parcel_resource_valid(self):
-        request, response = self.app.test_client.delete(self.url)
+        request, response = self.test_client.delete(self.url)
 
         self.assertEqual(response.status, 200)
         self.assertEqual(response.json, {'msg': 'Successfully deleted parcel d384a7d2-58a5-47f6-9f23-92b8d0d4dae8'})
@@ -134,7 +143,7 @@ class ParcelResourceTestCase(BaseTest):
     @patch('service_api.resources.parcel_resource.delete_one_parcel',
            new=CoroutineMock(return_value=[]))
     def test_delete_one_parcel_resource_bad_id(self):
-        request, response = self.app.test_client.delete(self.bad_url)
+        request, response = self.test_client.delete(self.bad_url)
         msg = {"Errors": {
             "_schema": [
                 ["badly formed hexadecimal UUID string"]
@@ -147,7 +156,7 @@ class ParcelResourceTestCase(BaseTest):
     @patch('service_api.resources.parcel_resource.delete_one_parcel',
            new=CoroutineMock(return_value=[]))
     def test_delete_one_parcel_resource_id_not_exist(self):
-        request, response = self.app.test_client.delete(self.id_not_exist_url)
+        request, response = self.test_client.delete(self.id_not_exist_url)
         msg = {'msg': 'Parcel with id f384a7d2-58a5-47f6-9f23-92b8d0d4dae8 does not exist'}
 
         self.assertEqual(response.status, 404)
@@ -156,13 +165,16 @@ class ParcelResourceTestCase(BaseTest):
     @patch('service_api.resources.parcel_resource.update_parcel_by_id',
            new=CoroutineMock(return_value={'id': 'd384a7d2-58a5-47f6-9f23-92b8d0d4dae8'}))
     def test_put_parcel_resource_valid(self):
-        request, response = self.app.test_client.put(self.url, json={
-            "description": "Food",
-            "type_id": "d8134182-6cbf-4aba-9cbe-4a3396ad430c",
-            "weight": 100,
-            "cost": 16243,
-            "supply_id": "3ac93c38-7114-43dd-810a-a11384be3fd8"
-        })
+        request, response = self.test_client.put(
+            self.url,
+            json={
+                "description": "Food",
+                "type_id": "d8134182-6cbf-4aba-9cbe-4a3396ad430c",
+                "weight": 100,
+                "cost": 16243,
+                "supply_id": "3ac93c38-7114-43dd-810a-a11384be3fd8"
+            }
+        )
         msg = {'msg': 'Parcel d384a7d2-58a5-47f6-9f23-92b8d0d4dae8 successfully updated'}
 
         self.assertEqual(response.status, 200)
@@ -171,13 +183,16 @@ class ParcelResourceTestCase(BaseTest):
     @patch('service_api.resources.parcel_resource.update_parcel_by_id',
            new=CoroutineMock(return_value=[]))
     def test_put_parcel_resource_bad_weight(self):
-        request, response = self.app.test_client.put(self.url, json={
-            "description": "Food",
-            "type_id": "d8134182-6cbf-4aba-9cbe-4a3396ad430c",
-            "weight": 2000,
-            "cost": 16243,
-            "supply_id": "3ac93c38-7114-43dd-810a-a11384be3fd8"
-        })
+        request, response = self.test_client.put(
+            self.url,
+            json={
+                "description": "Food",
+                "type_id": "d8134182-6cbf-4aba-9cbe-4a3396ad430c",
+                "weight": 2000,
+                "cost": 16243,
+                "supply_id": "3ac93c38-7114-43dd-810a-a11384be3fd8"
+            }
+        )
         msg = {'Errors': {'_schema': ["Parcel weight can't be greater than 1000"]}}
 
         self.assertEqual(response.status, 404)
@@ -186,13 +201,16 @@ class ParcelResourceTestCase(BaseTest):
     @patch('service_api.resources.parcel_resource.update_parcel_by_id',
            new=CoroutineMock(return_value=[]))
     def test_put_parcel_resource_id_not_exist(self):
-        request, response = self.app.test_client.put(self.id_not_exist_url, json={
-            "description": "Food",
-            "type_id": "d8134182-6cbf-4aba-9cbe-4a3396ad430c",
-            "weight": 200,
-            "cost": 16243,
-            "supply_id": "3ac93c38-7114-43dd-810a-a11384be3fd8"
-        })
+        request, response = self.test_client.put(
+            self.id_not_exist_url,
+            json={
+                "description": "Food",
+                "type_id": "d8134182-6cbf-4aba-9cbe-4a3396ad430c",
+                "weight": 200,
+                "cost": 16243,
+                "supply_id": "3ac93c38-7114-43dd-810a-a11384be3fd8"
+            }
+        )
         msg = {'msg': 'Parcel with id f384a7d2-58a5-47f6-9f23-92b8d0d4dae8 does not exist'}
 
         self.assertEqual(response.status, 404)
@@ -201,13 +219,16 @@ class ParcelResourceTestCase(BaseTest):
     @patch('service_api.resources.parcel_resource.update_parcel_by_id',
            new=CoroutineMock(return_value=[]))
     def test_put_parcel_resource_bad_types(self):
-        request, response = self.app.test_client.put(self.bad_url, json={
-            "description": 123,
-            "type_id": "",
-            "weight": "",
-            "cost": "",
-            "supply_id": ""
-        })
+        request, response = self.test_client.put(
+            self.bad_url,
+            json={
+                "description": 123,
+                "type_id": "",
+                "weight": "",
+                "cost": "",
+                "supply_id": ""
+            }
+        )
         msg = {
             'Errors': {
                 'cost': ['Not a valid number.'],
@@ -225,7 +246,7 @@ class ParcelResourceTestCase(BaseTest):
     @patch('service_api.resources.parcel_resource.update_parcel_by_id',
            new=CoroutineMock(return_value=[]))
     def test_put_parcel_resource_no_required(self):
-        request, response = self.app.test_client.put(self.url, json={})
+        request, response = self.test_client.put(self.url, json={})
         msg = {
             'Errors': {
                 'cost': ['Missing data for required field.'],
@@ -241,7 +262,7 @@ class ParcelResourceTestCase(BaseTest):
     @patch('service_api.resources.parcel_resource.get_parcel_by_id',
            new=CoroutineMock(return_value=one_parcel))
     def test_get_parcel_by_id_resource_valid(self):
-        request, response = self.app.test_client.get(self.url)
+        request, response = self.test_client.get(self.url)
         parcel_by_id = {
             "Parcel": {
                 "id": "d384a7d2-58a5-47f6-9f23-92b8d0d4dae8",
@@ -259,7 +280,7 @@ class ParcelResourceTestCase(BaseTest):
     @patch('service_api.resources.parcel_resource.get_parcel_by_id',
            new=CoroutineMock(return_value=[]))
     def test_get_parcel_by_id_not_exists_resource(self):
-        request, response = self.app.test_client.get(self.id_not_exist_url)
+        request, response = self.test_client.get(self.id_not_exist_url)
         msg = {'msg': 'Parcel with id f384a7d2-58a5-47f6-9f23-92b8d0d4dae8 does not exist'}
 
         self.assertEqual(response.status, 404)
@@ -268,7 +289,7 @@ class ParcelResourceTestCase(BaseTest):
     @patch('service_api.resources.parcel_resource.get_parcel_by_id',
            new=CoroutineMock(return_value=[]))
     def test_get_parcel_by_id_resource_bad_id(self):
-        request, response = self.app.test_client.get(self.bad_url)
+        request, response = self.test_client.get(self.bad_url)
         msg = {"Errors": {
             "_schema": [
                 ["badly formed hexadecimal UUID string"]
@@ -279,12 +300,12 @@ class ParcelResourceTestCase(BaseTest):
         self.assertEqual(response.json, msg)
 
 
-class TestParcelQueryResource(BaseTest):
+class TestCaseParcelQueryResource(BaseTestCase):
     valid_response_one_row = {'parcel_id': UUID('36461812-998b-40f4-98a1-35cbe7919d43'),
-                               'description': 'Food', 'cost': Decimal('16243'),
-                               'type_name': 'medium_box', 'client_name': 'Derek',
-                               'address': '76 Matiushenko str.',
-                               'received_date': datetime.datetime(2019, 4, 16, 7, 10, 55, 859520)}
+                              'description': 'Food', 'cost': Decimal('16243'),
+                              'type_name': 'medium_box', 'client_name': 'Derek',
+                              'address': '76 Matiushenko str.',
+                              'received_date': datetime.datetime(2019, 4, 16, 7, 10, 55, 859520)}
     valid_response_two_rows = [{'parcel_id': UUID('36461812-998b-40f4-98a1-35cbe7919d43'),
                                 'description': 'Food', 'cost': Decimal('16243'),
                                 'type_name': 'medium_box', 'client_name': 'Derek',
@@ -299,14 +320,15 @@ class TestParcelQueryResource(BaseTest):
     @classmethod
     def setUpClass(cls):
         cls.valid_url_no_date = '/parcel/medium_box/5782c996-d0d0-4e4f-895e-e4a98f26c65f'
-        cls.valid_url_one_date = '/parcel/medium_box/5782c996-d0d0-4e4f-895e-e4a98f26c65f?date=2019-04-16+07:10:55.85952'
+        cls.valid_url_one_date = '/parcel/medium_box/5782c996-d0d0-4e4f-895e-e4a98f26c65f' \
+                                 '?date=2019-04-16+07:10:55.85952'
         cls.valid_url_date_range = '/parcel/medium_box/5782c996-d0d0-4e4f-895e-e4a98f26c65f' \
                                    '?date=2019-04-22&date=2019-04-10'
         cls.bad_id_url = '/parcel/medium_box/123'
         cls.id_not_exist_url = '/parcel/medium_box/f384a7d2-58a5-47f6-9f23-92b8d0d4dae8'
 
     def test_get_parcel_by_type_and_storage_bad_id(self):
-        request, response = self.app.test_client.get(self.bad_id_url)
+        request, response = self.test_client.get(self.bad_id_url)
         msg = {"Errors": {
             "_schema": [
                 ["badly formed hexadecimal UUID string"]
@@ -319,7 +341,7 @@ class TestParcelQueryResource(BaseTest):
     @patch('service_api.resources.parcel_resource.get_parcel_by_type_and_storage',
            new=CoroutineMock(return_value=valid_response_two_rows))
     def test_get_parcel_by_type_and_storage_no_date(self):
-        request, response = self.app.test_client.get(self.valid_url_no_date)
+        request, response = self.test_client.get(self.valid_url_no_date)
         expected = deepcopy(self.valid_response_two_rows)
         for row in expected:
             row['parcel_id'] = str(row['parcel_id'])
@@ -337,7 +359,7 @@ class TestParcelQueryResource(BaseTest):
     @patch('service_api.resources.parcel_resource.get_parcel_by_type_and_storage',
            new=CoroutineMock(return_value=valid_response_two_rows))
     def test_get_parcel_by_type_and_storage_date_range(self):
-        request, response = self.app.test_client.get(self.valid_url_date_range)
+        request, response = self.test_client.get(self.valid_url_date_range)
         self.assertEqual(request.args['date'], ['2019-04-22', '2019-04-10'])
 
         expected = deepcopy(self.valid_response_two_rows)
@@ -357,7 +379,7 @@ class TestParcelQueryResource(BaseTest):
     @patch('service_api.resources.parcel_resource.get_parcel_by_type_and_storage',
            new=CoroutineMock(return_value=valid_response_one_row))
     def test_get_parcel_by_type_and_storage_date_one(self):
-        request, response = self.app.test_client.get(self.valid_url_one_date)
+        request, response = self.test_client.get(self.valid_url_one_date)
         self.assertEqual(request.args['date'], ['2019-04-16 07:10:55.85952'])
 
         expected = deepcopy(self.valid_response_one_row)
@@ -376,7 +398,7 @@ class TestParcelQueryResource(BaseTest):
     @patch('service_api.resources.parcel_resource.get_parcel_by_type_and_storage',
            new=CoroutineMock(return_value=[]))
     def test_get_parcel_by_type_and_storage_empty_output(self):
-        request, response = self.app.test_client.get(self.id_not_exist_url)
+        request, response = self.test_client.get(self.id_not_exist_url)
 
         self.assertEqual(response.status, 200)
         self.assertIsInstance(response.json, dict)

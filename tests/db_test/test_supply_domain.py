@@ -4,7 +4,7 @@ import uuid
 from copy import deepcopy
 from dateutil.parser import parse
 
-from tests.db_test.test_base import BaseTestCase
+from tests.db_test import BaseDomainTest
 from service_api.utils.load_json_data import get_dict_gen, load_json_data
 from service_api.utils.json_loader import JsonLoader
 from service_api.utils.path_finder import get_abs_path
@@ -16,7 +16,7 @@ from service_api.domain.supply import (get_all_supply,
                                        update_supply_by_id)
 
 
-class SupplyDomainTestCase(BaseTestCase):
+class SupplyDomainTestCase(BaseDomainTest):
     @classmethod
     def setUpClass(cls):
         super(SupplyDomainTestCase, cls).setUpClass()

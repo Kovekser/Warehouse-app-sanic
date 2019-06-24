@@ -75,7 +75,7 @@ class ParcelQueryResource(HTTPMethodView):
         _, err = ParcelSchema().dump({'id': storage_id})
         if err:
             return json({'Errors': err}, status=404)
-        date = request.args['date'] if 'date' in request.args else None
+        date = request.args.get('date', None)
 
         parcels = await get_parcel_by_type_and_storage(parcel_type, storage_id, date)
         if parcels:
