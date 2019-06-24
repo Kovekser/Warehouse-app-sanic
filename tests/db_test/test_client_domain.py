@@ -2,7 +2,7 @@ import psycopg2
 import uuid
 from copy import deepcopy
 
-from tests.db_test.test_base import BaseTestCase
+from tests.db_test import BaseDomainTest
 from service_api.utils.json_loader import JsonLoader
 from service_api.utils.path_finder import get_abs_path
 from service_api.domain.clients import (get_all_clients,
@@ -13,12 +13,12 @@ from service_api.domain.clients import (get_all_clients,
                                         update_client_by_id)
 
 
-class ClientDomainTestCase(BaseTestCase):
+class ClientDomainTestCase(BaseDomainTest):
     @classmethod
     def setUpClass(cls):
         super(ClientDomainTestCase, cls).setUpClass()
 
-        cls.test_client = {
+        cls.client = {
             "id": "dcf19a78-b01f-4251-924f-3403df3afdaa",
             "name": "John",
             "email": "johnlara@mail.com",
@@ -52,7 +52,7 @@ class ClientDomainTestCase(BaseTestCase):
     async def test_get_client_by_id_exists(self):
         await insert_one_client(next(self.data.loaded_json))
         test_result = await get_client_by_id(self.good_id)
-        expected = deepcopy(self.test_client)
+        expected = deepcopy(self.client)
         expected['id'] = uuid.UUID(expected['id'])
         self.assertEqual(test_result, expected)
 
@@ -67,7 +67,7 @@ class ClientDomainTestCase(BaseTestCase):
     async def test_insert_one_client(self):
         await insert_one_client(next(self.data.loaded_json))
         result = await get_all_clients()
-        expected = deepcopy(self.test_client)
+        expected = deepcopy(self.client)
         expected['id'] = uuid.UUID(expected['id'])
         self.assertEqual(result, expected)
 
@@ -84,6 +84,7 @@ class ClientDomainTestCase(BaseTestCase):
     async def test_delete_one_client_exist(self):
         await insert_one_client(next(self.data.loaded_json))
         result = await get_all_clients()
+        self.assertIsInstance(result, dict)
         self.assertIsInstance(result, dict)
         result = await delete_one_client(self.good_id)
         self.assertEqual(result['email'], "johnlara@mail.com")

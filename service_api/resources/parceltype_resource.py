@@ -8,14 +8,13 @@ from service_api.domain.parsel_type import (get_all_types,
                                             delete_one_type,
                                             update_type_by_id)
 from service_api.forms import ParceltypeSchema
+from service_api.utils.response_utils import map_response
 
 
 class ParcelTypeAllResource(HTTPMethodView):
     async def get(self, request):
         all_types = await get_all_types()
-        for row in all_types:
-            row['id'] = str(row['id'])
-        return json({"Types": all_types})
+        return json({"Types": map_response(all_types)})
 
     async def post(self, request):
         json_input = request.json
@@ -34,8 +33,7 @@ class ParcelTypeResource(HTTPMethodView):
 
         pars_type = await get_type_by_id(type_id)
         if pars_type:
-            pars_type['id'] = str(pars_type['id'])
-            return json({"Parcel_type": pars_type})
+            return json({"Parcel_type": map_response(pars_type)})
         return json({'msg': 'Parcel type with id {} does not exist'.format(type_id)}, status=404)
 
     async def delete(self, request, type_id):

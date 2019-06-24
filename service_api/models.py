@@ -66,3 +66,4 @@ Parcel = Table(
 )
 
 models = (Parcel, Supply, Storage, Parceltype, Clients)
+

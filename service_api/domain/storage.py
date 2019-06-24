@@ -1,10 +1,10 @@
 from service_api.models import Storage
-from service_api.db import select, execute_statement
+from service_api.db import select_statement, execute_statement
 
 
 async def get_all_storage():
     statement = Storage.select()
-    return await select(statement)
+    return await select_statement(statement)
 
 
 async def insert_one_storage(row):
@@ -14,14 +14,14 @@ async def insert_one_storage(row):
 
 async def get_storage_by_id(storage_id):
     statement = Storage.select().where(Storage.c.id == storage_id)
-    return await select(statement)
+    return await select_statement(statement)
 
 
 async def delete_one_storage(storage_id):
     statement = Storage.delete().\
         where(Storage.c.id == storage_id).\
         returning(Storage.c.address)
-    return await select(statement)
+    return await select_statement(statement)
 
 
 async def delete_all_storage():
@@ -34,4 +34,4 @@ async def update_storage_by_id(data):
         values(**data).\
         where(Storage.c.id == data['id']). \
         returning(Storage.c.address)
-    return await select(statement)
+    return await select_statement(statement)

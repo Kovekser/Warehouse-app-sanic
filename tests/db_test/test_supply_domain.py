@@ -4,7 +4,7 @@ import uuid
 from copy import deepcopy
 from dateutil.parser import parse
 
-from tests.db_test.test_base import BaseTestCase
+from tests.db_test import BaseDomainTest
 from service_api.utils.load_json_data import get_dict_gen, load_json_data
 from service_api.utils.json_loader import JsonLoader
 from service_api.utils.path_finder import get_abs_path
@@ -16,7 +16,7 @@ from service_api.domain.supply import (get_all_supply,
                                        update_supply_by_id)
 
 
-class SupplyDomainTestCase(BaseTestCase):
+class SupplyDomainTestCase(BaseDomainTest):
     @classmethod
     def setUpClass(cls):
         super(SupplyDomainTestCase, cls).setUpClass()
@@ -60,7 +60,7 @@ class SupplyDomainTestCase(BaseTestCase):
         expected = list(self.data.loaded_json)
         for i, row in enumerate(expected):
             expected[i] = {d[0]: t(d[1]) for t, d in zip(self.types, row.items())}
-        self.assertEqual(len(test_result), 8)
+        self.assertEqual(len(test_result), 9)
         self.assertEqual(test_result, expected)
 
     async def test_get_supply_by_id_exists(self):
@@ -89,7 +89,7 @@ class SupplyDomainTestCase(BaseTestCase):
         for row in self.data.loaded_json:
             await insert_one_supply(row)
         result = await get_all_supply()
-        self.assertEqual(len(result), 8)
+        self.assertEqual(len(result), 9)
         await delete_all_supply()
         result = await get_all_supply()
         self.assertEqual(len(result), 0)

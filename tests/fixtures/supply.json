@@ -12,7 +12,7 @@
     "id": "3ac93c38-7114-43dd-810a-a11384be3fd8",
     "from_storage": "28a8e222-bd32-489a-b5ef-4370b9032c45",
     "to_storage": "5782c996-d0d0-4e4f-895e-e4a98f26c65f",
-    "status": "recieved",
+    "status": "received",
     "client_id": "357642d9-4ac0-47f2-a802-252d82fff10b",
     "send_date": "2019-04-09 07:10:55.859486",
     "received_date": "2019-04-16 07:10:55.85952"
@@ -39,7 +39,7 @@
     "id": "86962950-3c5a-488b-aae8-3eafff97575f",
     "from_storage": "6ca6522b-6a3d-48c4-8902-b1b28896aefe",
     "to_storage": "5782c996-d0d0-4e4f-895e-e4a98f26c65f",
-    "status": "recieved",
+    "status": "received",
     "client_id": "c35ce34d-fae6-4495-bd40-78b1892c02f2",
     "send_date": "2019-04-09 07:10:55.859486",
     "received_date": "2019-04-16 07:10:55.85952"
@@ -57,7 +57,7 @@
     "id": "67ea2c74-2831-40f2-8109-eadb8dcdcd58",
     "from_storage": "9147bf13-7a58-4d36-af58-c04852ed60d4",
     "to_storage": "fc6efd2d-86cb-4932-9acb-1ce97f8bb468",
-    "status": "recieved",
+    "status": "received",
     "client_id": "c35ce34d-fae6-4495-bd40-78b1892c02f2",
     "send_date": "2019-04-09 07:10:55.859486",
     "received_date": "2019-04-16 07:10:55.85952"
@@ -70,5 +70,14 @@
     "client_id": "c35ce34d-fae6-4495-bd40-78b1892c02f2",
     "send_date": "2019-04-07 07:10:55.859486",
     "received_date": "2019-04-16 07:10:55.85952"
+  },
+  {
+    "id": "28a8e222-bd32-489a-b5ef-4370b9032c45",
+    "from_storage": "28a8e222-bd32-489a-b5ef-4370b9032c45",
+    "to_storage": "5782c996-d0d0-4e4f-895e-e4a98f26c65f",
+    "status": "received",
+    "client_id": "357642d9-4ac0-47f2-a802-252d82fff10b",
+    "send_date": "2019-04-09 07:10:55.859486",
+    "received_date": "2019-04-18 07:10:55.85952"
   }
 ]

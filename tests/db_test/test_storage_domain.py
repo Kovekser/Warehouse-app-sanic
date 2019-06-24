@@ -2,7 +2,7 @@ import psycopg2
 import uuid
 from copy import deepcopy
 
-from tests.db_test.test_base import BaseTestCase
+from tests.db_test import BaseDomainTest
 from service_api.utils.json_loader import JsonLoader
 from service_api.utils.path_finder import get_abs_path
 from service_api.domain.storage import (get_all_storage,
@@ -13,7 +13,7 @@ from service_api.domain.storage import (get_all_storage,
                                         update_storage_by_id)
 
 
-class StorageDomainTestCase(BaseTestCase):
+class StorageDomainTestCase(BaseDomainTest):
     @classmethod
     def setUpClass(cls):
         super(StorageDomainTestCase, cls).setUpClass()

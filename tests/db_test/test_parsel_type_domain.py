@@ -2,7 +2,7 @@ import psycopg2
 import uuid
 from copy import deepcopy
 
-from tests.db_test.test_base import BaseTestCase
+from tests.db_test import BaseDomainTest
 from service_api.utils.json_loader import JsonLoader
 from service_api.utils.path_finder import get_abs_path
 from service_api.domain.parsel_type import (get_all_types,
@@ -14,7 +14,7 @@ from service_api.domain.parsel_type import (get_all_types,
                                             )
 
 
-class ParselTypeDomainTestCase(BaseTestCase):
+class ParselTypeDomainTestCase(BaseDomainTest):
     @classmethod
     def setUpClass(cls):
         super(ParselTypeDomainTestCase, cls).setUpClass()

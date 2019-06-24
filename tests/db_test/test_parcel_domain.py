@@ -4,7 +4,7 @@ import uuid
 from copy import deepcopy
 from decimal import Context
 
-from tests.db_test.test_base import BaseTestCase
+from tests.db_test import BaseDomainTest
 from service_api.utils.load_json_data import get_dict_gen, load_json_data
 from service_api.utils.json_loader import JsonLoader
 from service_api.utils.path_finder import get_abs_path
@@ -13,13 +13,18 @@ from service_api.domain.parcel import (get_all_parcels,
                                        delete_all_parcel,
                                        get_parcel_by_id,
                                        delete_one_parcel,
-                                       update_parcel_by_id)
+                                       update_parcel_by_id,
+                                       get_parcel_by_type_and_storage)
 
 
-class ParcelDomainTestCase(BaseTestCase):
+class ParcelDomainTestCase(BaseDomainTest):
     @classmethod
     def setUpClass(cls):
         super(ParcelDomainTestCase, cls).setUpClass()
+
+        cls.base_test_case = {'parcel_type': 'medium_box',
+                              'storage': '5782c996-d0d0-4e4f-895e-e4a98f26c65f',
+                              'date': ['2019-04-22', '2019-04-10']}
 
         cls.test_parcel = {
             "id": "720745e2-cee6-4338-8399-72b6affb71a6",
@@ -63,7 +68,7 @@ class ParcelDomainTestCase(BaseTestCase):
         expected = list(self.data.loaded_json)
         for i, row in enumerate(expected):
             expected[i] = {d[0]: t(d[1]) for t, d in zip(self.types, row.items())}
-        self.assertEqual(len(test_result), 6)
+        self.assertEqual(len(test_result), 7)
         self.assertEqual(test_result, expected)
 
     async def test_get_parcel_by_id_exists(self):
@@ -95,7 +100,7 @@ class ParcelDomainTestCase(BaseTestCase):
         expected = list(self.data.loaded_json)
         for i, row in enumerate(expected):
             expected[i] = {d[0]: t(d[1]) for t, d in zip(self.types, row.items())}
-        self.assertEqual(len(result), 6)
+        self.assertEqual(len(result), 7)
         await delete_all_parcel()
         result = await get_all_parcels()
         self.assertEqual(len(result), 0)
@@ -123,3 +128,59 @@ class ParcelDomainTestCase(BaseTestCase):
         expected = {d[0]: t(d[1]) for t, d in zip(self.types, expected.items())}
         self.assertEqual(updated_result['id'], expected['id'])
         self.assertEqual(get_result, expected)
+
+    async def test_get_parcel_by_type_and_storage_db_valid_data_range(self):
+        for row in self.data.loaded_json:
+            await insert_one_parcel(row)
+        result = await get_parcel_by_type_and_storage(**self.base_test_case)
+        self.assertIsInstance(result, list)
+        self.assertEqual(len(result), 2)
+
+    async def test_get_parcel_by_type_and_storage_db_valid_data_one(self):
+        for row in self.data.loaded_json:
+            await insert_one_parcel(row)
+        test_case = dict(deepcopy(self.base_test_case), date=['2019-04-16 07:10:55.85952'])
+
+        result = await get_parcel_by_type_and_storage(**test_case)
+        self.assertIsInstance(result, dict)
+        self.assertEqual(len(result), 7)
+        self.assertIn('parcel_id', result)
+        self.assertIn('description', result)
+        self.assertIn('cost', result)
+        self.assertIn('type_name', result)
+        self.assertIn('client_name', result)
+        self.assertIn('address', result)
+        self.assertIn('received_date', result)
+
+    async def test_get_parcel_by_type_and_storage_db_date_empty(self):
+        for row in self.data.loaded_json:
+            await insert_one_parcel(row)
+        test_case = dict(deepcopy(self.base_test_case), date=None)
+
+        result = await get_parcel_by_type_and_storage(**test_case)
+        self.assertIsInstance(result, list)
+        self.assertEqual(len(result), 2)
+
+    async def test_get_parcel_by_type_and_storage_type_not_exist(self):
+        for row in self.data.loaded_json:
+            await insert_one_parcel(row)
+        test_case = dict(deepcopy(self.base_test_case), parcel_type='dummy')
+
+        result = await get_parcel_by_type_and_storage(**test_case)
+        self.assertEqual(result, [])
+
+    async def test_get_parcel_by_type_and_storage_date_not_exist(self):
+        for row in self.data.loaded_json:
+            await insert_one_parcel(row)
+        test_case = dict(deepcopy(self.base_test_case), date=['2029-04-16 07:10:55.85952'])
+
+        result = await get_parcel_by_type_and_storage(**test_case)
+        self.assertEqual(result, [])
+
+    async def test_get_parcel_by_type_and_storage_storage_not_exist(self):
+        for row in self.data.loaded_json:
+            await insert_one_parcel(row)
+        test_case = dict(deepcopy(self.base_test_case), storage='11111111-2222-3333-4444-555555555555')
+
+        result = await get_parcel_by_type_and_storage(**test_case)
+        self.assertEqual(result, [])

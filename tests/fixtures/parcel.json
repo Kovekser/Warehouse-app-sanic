@@ -46,5 +46,13 @@
     "weight": 50,
     "cost": 7891,
     "supply_id": "04691388-56c1-4a49-8ae1-316c9439b026"
+  },
+  {
+    "id": "67ea2c74-2831-40f2-8109-eadb8dcdcd58",
+    "description": "Other goods",
+    "type_id": "d8134182-6cbf-4aba-9cbe-4a3396ad430c",
+    "weight": 50,
+    "cost": 7891,
+    "supply_id": "28a8e222-bd32-489a-b5ef-4370b9032c45"
   }
 ]
