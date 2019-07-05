@@ -13,7 +13,7 @@ from service_api.utils.response_utils import map_response
 
 class SupplyAllResource(HTTPMethodView):
     async def get(self, request):
-        all_supply = await get_all_supply()
+        all_supply, _ = await get_all_supply()
         return json({"Supply": map_response(all_supply)})
 
     async def post(self, request):
@@ -32,7 +32,7 @@ class SupplyResource(HTTPMethodView):
         if err:
             return json({'Errors': err}, status=404)
 
-        supply = await get_supply_by_id(supply_id)
+        supply, _ = await get_supply_by_id(supply_id)
         if supply:
             return json({"Supply": map_response(supply)})
         return json({'msg': 'Supply with id {} does not exist'.format(supply_id)}, status=404)
@@ -43,9 +43,9 @@ class SupplyResource(HTTPMethodView):
         if err:
             return json({'Errors': err}, status=404)
 
-        result = await delete_one_supply(supply_id)
+        result, _ = await delete_one_supply(supply_id)
         if result:
-            return json({'msg': 'Successfully deleted supply {}'.format(supply_id)})
+            return json({'msg': 'Successfully deleted supply {}'.format(result[0]['id'])})
         return json({'msg': 'Supply with id {} does not exist'.format(supply_id)}, status=404)
 
     async def put(self, request, supply_id):
@@ -55,7 +55,7 @@ class SupplyResource(HTTPMethodView):
         if err:
             return json({'Errors': err}, status=404)
 
-        result = await update_supply_by_id(supply_data)
+        result, _ = await update_supply_by_id(supply_data)
         if result:
-            return json({'msg': 'Supply {} successfully updated'.format(supply_id)})
+            return json({'msg': 'Supply {} successfully updated'.format(result[0]['id'])})
         return json({'msg': 'Supply with id {} does not exist'.format(supply_id)}, status=404)

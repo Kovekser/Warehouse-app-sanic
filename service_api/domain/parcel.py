@@ -49,7 +49,6 @@ async def get_parcel_by_type_and_storage(parcel_type, storage, date):
                     join(Storage, Storage.c.id == Supply.c.to_storage))
     if date:
         if len(date) == 1:
-            # date = date[0]
             statement = base_statement.where(and_
                                              (Parceltype.c.type_name == parcel_type,
                                               Supply.c.to_storage == storage,

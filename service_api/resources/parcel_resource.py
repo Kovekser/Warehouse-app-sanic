@@ -10,12 +10,13 @@ from service_api.domain.parcel import (get_all_parcels,
                                        update_parcel_by_id,
                                        get_parcel_by_type_and_storage)
 from service_api.forms import ParcelSchema
+from service_api.utils.rest_client.base import RESTClientRegistry
 from service_api.utils.response_utils import map_response
 
 
 class ParcelAllResource(HTTPMethodView):
     async def get(self, request):
-        all_parcel = await get_all_parcels()
+        all_parcel, _ = await get_all_parcels()
         return json({"Parcels": map_response(all_parcel)})
 
     async def post(self, request):
@@ -34,7 +35,7 @@ class ParcelResource(HTTPMethodView):
         if err:
             return json({'Errors': err}, status=404)
 
-        parcel = await get_parcel_by_id(parcel_id)
+        parcel, _ = await get_parcel_by_id(parcel_id)
         if parcel:
             return json({"Parcel": map_response(parcel)})
         return json({'msg': 'Parcel with id {} does not exist'.format(parcel_id)}, status=404)
@@ -44,9 +45,9 @@ class ParcelResource(HTTPMethodView):
         if err:
             return json({'Errors': err}, status=404)
 
-        result = await delete_one_parcel(parcel_id)
+        result, _ = await delete_one_parcel(parcel_id)
         if result:
-            return json({'msg': 'Successfully deleted parcel {}'.format(result['id'])})
+            return json({'msg': 'Successfully deleted parcel {}'.format(result[0]['id'])})
         return json({'msg': 'Parcel with id {} does not exist'.format(parcel_id)}, status=404)
 
     async def put(self, request, parcel_id):
@@ -56,9 +57,9 @@ class ParcelResource(HTTPMethodView):
         if err:
             return json({'Errors': err}, status=404)
 
-        result = await update_parcel_by_id(parcel_data)
+        result, _ = await update_parcel_by_id(parcel_data)
         if result:
-            return json({'msg': 'Parcel {} successfully updated'.format(result['id'])})
+            return json({'msg': 'Parcel {} successfully updated'.format(result[0]['id'])})
         return json({'msg': 'Parcel with id {} does not exist'.format(parcel_id)}, status=404)
 
 
@@ -77,9 +78,24 @@ class ParcelQueryResource(HTTPMethodView):
             return json({'Errors': err}, status=404)
         date = request.args.get('date', None)
 
-        parcels = await get_parcel_by_type_and_storage(parcel_type, storage_id, date)
+        parcels, _ = await get_parcel_by_type_and_storage(parcel_type, storage_id, date)
         if parcels:
-            total_cost = sum(i['cost'] for i in parcels) if isinstance(parcels, list) else parcels['cost']
+            total_cost = sum(i['cost'] for i in parcels)\
+                # if isinstance(parcels, list) else parcels['cost']
 
             return json({'parcels': map_response(parcels), 'total_cost': total_cost}, status=200)
         return json({'parcels': parcels, 'total_cost': 0}, status=200)
+
+
+class ParcelReportResource(HTTPMethodView):
+    async def post(self, request):
+        reports_client = RESTClientRegistry.get('reports')
+        report_data, head = await get_parcel_by_type_and_storage(request.json.get('parcel_type'),
+                                                                 request.json.get('storage_id'),
+                                                                 request.json.get('date', None))
+
+        response, status_code = await reports_client().generate_report(url_path='report', json_data={'report_type': 'parcels',
+                                                                                 'headers': head,
+                                                                                 'data': map_response(report_data)})
+        print(response, status_code)
+        return json({'result': response}, status=status_code)

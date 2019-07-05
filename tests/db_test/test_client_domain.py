@@ -18,20 +18,20 @@ class ClientDomainTestCase(BaseDomainTest):
     def setUpClass(cls):
         super(ClientDomainTestCase, cls).setUpClass()
 
-        cls.client = {
+        cls.client = [{
             "id": "dcf19a78-b01f-4251-924f-3403df3afdaa",
             "name": "John",
             "email": "johnlara@mail.com",
             "age": 18,
             "address": "3073 Derek Drive"
-        }
-        cls.new_client = {
+        }]
+        cls.new_client = [{
             "id": "dcf19a78-b01f-4251-924f-3403df3afdaa",
             "name": "John Galt",
             "email": "johngalt@mail.com",
             "age": 38,
             "address": "3073 Derek Drive avenue"
-        }
+        }]
         cls.good_id = 'dcf19a78-b01f-4251-924f-3403df3afdaa'
         cls.bad_id = '49732169'
         cls.id_not_exist = '42732169-9b7b-4f09-aa1b-7fecb350ab14'
@@ -43,7 +43,7 @@ class ClientDomainTestCase(BaseDomainTest):
     async def test_get_all_clients(self):
         for row in self.data.loaded_json:
             await insert_one_client(row)
-        test_result = await get_all_clients()
+        test_result, _ = await get_all_clients()
         for row in test_result:
             row['id'] = str(row['id'])
         self.assertEqual(len(test_result), 6)
@@ -51,13 +51,13 @@ class ClientDomainTestCase(BaseDomainTest):
 
     async def test_get_client_by_id_exists(self):
         await insert_one_client(next(self.data.loaded_json))
-        test_result = await get_client_by_id(self.good_id)
+        test_result, _ = await get_client_by_id(self.good_id)
         expected = deepcopy(self.client)
-        expected['id'] = uuid.UUID(expected['id'])
+        expected[0]['id'] = uuid.UUID(expected[0]['id'])
         self.assertEqual(test_result, expected)
 
     async def test_get_client_by_id_not_exists(self):
-        test_result = await get_client_by_id(self.id_not_exist)
+        test_result, _ = await get_client_by_id(self.id_not_exist)
         self.assertEqual(test_result, [])
 
     async def test_get_client_by_id_bad(self):
@@ -66,39 +66,39 @@ class ClientDomainTestCase(BaseDomainTest):
 
     async def test_insert_one_client(self):
         await insert_one_client(next(self.data.loaded_json))
-        result = await get_all_clients()
+        result, _ = await get_all_clients()
         expected = deepcopy(self.client)
-        expected['id'] = uuid.UUID(expected['id'])
+        expected[0]['id'] = uuid.UUID(expected[0]['id'])
         self.assertEqual(result, expected)
 
     async def test_delete_all_clients(self):
         for row in self.data.loaded_json:
             await insert_one_client(row)
-        result = await get_all_clients()
+        result, _ = await get_all_clients()
         self.assertEqual(len(result), 6)
         await delete_all_clients()
-        result = await get_all_clients()
+        result, _ = await get_all_clients()
         self.assertEqual(len(result), 0)
         self.assertEqual(result, [])
 
     async def test_delete_one_client_exist(self):
         await insert_one_client(next(self.data.loaded_json))
-        result = await get_all_clients()
-        self.assertIsInstance(result, dict)
-        self.assertIsInstance(result, dict)
-        result = await delete_one_client(self.good_id)
-        self.assertEqual(result['email'], "johnlara@mail.com")
-        result = await get_all_clients()
+        result, _ = await get_all_clients()
+        self.assertIsInstance(result, list)
+        self.assertEqual(1, len(result))
+        result, _ = await delete_one_client(self.good_id)
+        self.assertEqual(result[0]['email'], "johnlara@mail.com")
+        result, _ = await get_all_clients()
         self.assertEqual(len(result), 0)
 
     async def test_delete_one_client_not_exist(self):
-        result = await delete_one_client(self.id_not_exist)
+        result, _ = await delete_one_client(self.id_not_exist)
         self.assertEqual(result, [])
 
     async def test_update_client_by_id_exist(self):
         await insert_one_client(next(self.data.loaded_json))
-        result = await update_client_by_id(self.new_client)
-        self.assertEqual(result['email'], "johngalt@mail.com")
-        result = await get_all_clients()
-        result['id'] = str(result['id'])
+        result, _ = await update_client_by_id(self.new_client[0])
+        self.assertEqual(result[0]['email'], "johngalt@mail.com")
+        result, _ = await get_all_clients()
+        result[0]['id'] = str(result[0]['id'])
         self.assertEqual(result, self.new_client)

@@ -38,7 +38,7 @@ class ParselTypeDomainTestCase(BaseDomainTest):
     async def test_get_all_types(self):
         for row in self.data.loaded_json:
             await insert_one_type(row)
-        test_result = await get_all_types()
+        test_result, _ = await get_all_types()
         for row in test_result:
             row['id'] = str(row['id'])
         self.assertEqual(len(test_result), 5)
@@ -46,13 +46,15 @@ class ParselTypeDomainTestCase(BaseDomainTest):
 
     async def test_get_type_by_id_exists(self):
         await insert_one_type(next(self.data.loaded_json))
-        test_result = await get_type_by_id(self.good_id)
+        test_result, _ = await get_type_by_id(self.good_id)
         expected = deepcopy(self.test_type)
         expected['id'] = uuid.UUID(expected['id'])
-        self.assertEqual(test_result, expected)
+        self.assertIsInstance(test_result, list)
+        self.assertEqual(1, len(test_result))
+        self.assertEqual(test_result[0], expected)
 
     async def test_get_type_by_id_not_exists(self):
-        test_result = await get_type_by_id(self.id_not_exist)
+        test_result, _ = await get_type_by_id(self.id_not_exist)
         self.assertEqual(test_result, [])
 
     async def test_get_type_by_id_bad(self):
@@ -61,39 +63,42 @@ class ParselTypeDomainTestCase(BaseDomainTest):
 
     async def test_insert_one_type(self):
         await insert_one_type(next(self.data.loaded_json))
-        result = await get_all_types()
+        result, _ = await get_all_types()
         expected = deepcopy(self.test_type)
         expected['id'] = uuid.UUID(expected['id'])
-        self.assertEqual(result, expected)
+        self.assertIsInstance(result, list)
+        self.assertEqual(1, len(result))
+        self.assertEqual(result[0], expected)
 
     async def test_delete_all_types(self):
         for row in self.data.loaded_json:
             await insert_one_type(row)
-        result = await get_all_types()
+        result, _ = await get_all_types()
         self.assertEqual(len(result), 5)
         await delete_all_type()
-        result = await get_all_types()
+        result, _ = await get_all_types()
         self.assertEqual(len(result), 0)
         self.assertEqual(result, [])
 
     async def test_delete_one_type_exist(self):
-        await insert_one_type(next(self.data.loaded_json))
-        result = await get_all_types()
-        self.assertIsInstance(result, dict)
-        result = await delete_one_type(self.good_id)
-        self.assertEqual(result['type_name'], 'documents')
-        result = await get_all_types()
+        await insert_one_type(self.test_type)
+        result, _ = await get_all_types()
+        self.assertIsInstance(result, list)
+        self.assertEqual(1, len(result))
+        result, _ = await delete_one_type(self.good_id)
+        self.assertEqual(result[0]['type_name'], 'documents')
+        result, _ = await get_all_types()
         self.assertEqual(len(result), 0)
 
     async def test_delete_one_type_not_exist(self):
-        result = await delete_one_type(self.id_not_exist)
+        result, _ = await delete_one_type(self.id_not_exist)
         self.assertEqual(result, [])
 
     async def test_update_type_by_id_exist(self):
-        await insert_one_type(next(self.data.loaded_json))
-        result = await update_type_by_id(self.new_type)
-        self.assertEqual(result['type_name'], 'very important documents')
-        result = await get_all_types()
+        await insert_one_type(self.test_type)
+        result, _ = await update_type_by_id(self.new_type)
+        self.assertEqual(result[0]['type_name'], 'very important documents')
+        result, _ = await get_all_types()
         expected = deepcopy(self.new_type)
         expected['id'] = uuid.UUID(expected['id'])
-        self.assertEqual(result, expected)
+        self.assertEqual(result[0], expected)
