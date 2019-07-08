@@ -13,7 +13,7 @@ from service_api.utils.response_utils import map_response
 
 class ParcelTypeAllResource(HTTPMethodView):
     async def get(self, request):
-        all_types, _ = await get_all_types()
+        all_types = await get_all_types()
         return json({"Types": map_response(all_types)})
 
     async def post(self, request):
@@ -31,7 +31,7 @@ class ParcelTypeResource(HTTPMethodView):
         if err:
             return json({'Errors': err}, status=404)
 
-        pars_type, _ = await get_type_by_id(type_id)
+        pars_type = await get_type_by_id(type_id)
         if pars_type:
             return json({"Parcel_type": map_response(pars_type)})
         return json({'msg': 'Parcel type with id {} does not exist'.format(type_id)}, status=404)
@@ -41,7 +41,7 @@ class ParcelTypeResource(HTTPMethodView):
         if err:
             return json({'Errors': err}, status=404)
 
-        result, _ = await delete_one_type(type_id)
+        result = await delete_one_type(type_id)
         if result:
             return json({'msg': 'Successfully deleted parcel type {}'.format(result[0]['type_name'])})
         return json({'msg': 'Parcel type with id {} does not exist'.format(type_id)}, status=404)
@@ -53,7 +53,7 @@ class ParcelTypeResource(HTTPMethodView):
         if err:
             return json({'Errors': err}, status=404)
 
-        result, _ = await update_type_by_id(type_data)
+        result = await update_type_by_id(type_data)
         if result:
             return json({'msg': 'Parcel type {} successfully updated'.format(result[0]['type_name'])})
         return json({'msg': 'Parcel type with id {} does not exist'.format(type_id)}, status=404)

@@ -28,14 +28,14 @@ class ParcelResourceTestCaseCase(BaseTestCase):
         cls.id_not_exist_url = '/parcel/f384a7d2-58a5-47f6-9f23-92b8d0d4dae8'
 
     @patch('service_api.resources.parcel_resource.get_all_parcels',
-           new=CoroutineMock(return_value=([], '')))
+           new=CoroutineMock(return_value=[]))
     def test_get_all_parcel_resource_empty_table(self):
         request, response = self.test_client.get(f'{self.base_url}/parcel')
         self.assertEqual(response.status, 200)
         self.assertEqual(response.json, {"Parcels": []})
 
     @patch('service_api.resources.parcel_resource.get_all_parcels',
-           new=CoroutineMock(return_value=(select_all_data, '')))
+           new=CoroutineMock(return_value=select_all_data))
     def test_get_all_parcels_resource_not_empty(self):
         row_keys = ("id", "description", "type_id", "weight", "cost", "supply_id")
         request, response = self.test_client.get(f'{self.base_url}/parcel')
@@ -126,7 +126,7 @@ class ParcelResourceTestCaseCase(BaseTestCase):
         self.assertEqual(response.json, msg)
 
     @patch('service_api.resources.parcel_resource.delete_one_parcel',
-           new=CoroutineMock(return_value=([{'id': 'd384a7d2-58a5-47f6-9f23-92b8d0d4dae8'}], '')))
+           new=CoroutineMock(return_value=[{'id': 'd384a7d2-58a5-47f6-9f23-92b8d0d4dae8'}]))
     def test_delete_one_parcel_resource_valid(self):
         request, response = self.test_client.delete(f'{self.base_url}{self.url}')
 
@@ -145,7 +145,7 @@ class ParcelResourceTestCaseCase(BaseTestCase):
         self.assertEqual(response.json, msg)
 
     @patch('service_api.resources.parcel_resource.delete_one_parcel',
-           new=CoroutineMock(return_value=([], '')))
+           new=CoroutineMock(return_value=[]))
     def test_delete_one_parcel_resource_id_not_exist(self):
         request, response = self.test_client.delete(f'{self.base_url}{self.id_not_exist_url}')
         msg = {'msg': 'Parcel with id f384a7d2-58a5-47f6-9f23-92b8d0d4dae8 does not exist'}
@@ -154,7 +154,7 @@ class ParcelResourceTestCaseCase(BaseTestCase):
         self.assertEqual(response.json, msg)
 
     @patch('service_api.resources.parcel_resource.update_parcel_by_id',
-           new=CoroutineMock(return_value=([{'id': 'd384a7d2-58a5-47f6-9f23-92b8d0d4dae8'}],'')))
+           new=CoroutineMock(return_value=[{'id': 'd384a7d2-58a5-47f6-9f23-92b8d0d4dae8'}]))
     def test_put_parcel_resource_valid(self):
         request, response = self.test_client.put(
             f'{self.base_url}{self.url}',
@@ -188,7 +188,7 @@ class ParcelResourceTestCaseCase(BaseTestCase):
         self.assertEqual(response.json, msg)
 
     @patch('service_api.resources.parcel_resource.update_parcel_by_id',
-           new=CoroutineMock(return_value=([], '')))
+           new=CoroutineMock(return_value=[]))
     def test_put_parcel_resource_id_not_exist(self):
         request, response = self.test_client.put(
             f'{self.base_url}{self.id_not_exist_url}',
@@ -245,7 +245,7 @@ class ParcelResourceTestCaseCase(BaseTestCase):
         self.assertEqual(response.json, msg)
 
     @patch('service_api.resources.parcel_resource.get_parcel_by_id',
-           new=CoroutineMock(return_value=(one_parcel, '')))
+           new=CoroutineMock(return_value=one_parcel))
     def test_get_parcel_by_id_resource_valid(self):
         request, response = self.test_client.get(f'{self.base_url}{self.url}')
         parcel_by_id = {
@@ -263,7 +263,7 @@ class ParcelResourceTestCaseCase(BaseTestCase):
         self.assertEqual(response.json, parcel_by_id)
 
     @patch('service_api.resources.parcel_resource.get_parcel_by_id',
-           new=CoroutineMock(return_value=([], '')))
+           new=CoroutineMock(return_value=[]))
     def test_get_parcel_by_id_not_exists_resource(self):
         request, response = self.test_client.get(f'{self.base_url}{self.id_not_exist_url}')
         msg = {'msg': 'Parcel with id f384a7d2-58a5-47f6-9f23-92b8d0d4dae8 does not exist'}
@@ -322,7 +322,7 @@ class ParcelQueryResourceTestCase(BaseTestCase):
         self.assertEqual(response.json, msg)
 
     @patch('service_api.resources.parcel_resource.get_parcel_by_type_and_storage',
-           new=CoroutineMock(return_value=(valid_response_two_rows, '')))
+           new=CoroutineMock(return_value=valid_response_two_rows))
     def test_get_parcel_by_type_and_storage_no_date(self):
         request, response = self.test_client.get(self.valid_url_no_date)
         expected = deepcopy(self.valid_response_two_rows)
@@ -340,7 +340,7 @@ class ParcelQueryResourceTestCase(BaseTestCase):
         self.assertEqual(response.json['parcels'], expected)
 
     @patch('service_api.resources.parcel_resource.get_parcel_by_type_and_storage',
-           new=CoroutineMock(return_value=(valid_response_two_rows, '')))
+           new=CoroutineMock(return_value=valid_response_two_rows))
     def test_get_parcel_by_type_and_storage_date_range(self):
         request, response = self.test_client.get(self.valid_url_date_range)
         self.assertEqual(request.args['date'], ['2019-04-22', '2019-04-10'])
@@ -360,7 +360,7 @@ class ParcelQueryResourceTestCase(BaseTestCase):
         self.assertEqual(response.json['parcels'], expected)
 
     @patch('service_api.resources.parcel_resource.get_parcel_by_type_and_storage',
-           new=CoroutineMock(return_value=(valid_response_one_row, '')))
+           new=CoroutineMock(return_value=valid_response_one_row))
     def test_get_parcel_by_type_and_storage_date_one(self):
         request, response = self.test_client.get(self.valid_url_one_date)
         self.assertEqual(request.args['date'], ['2019-04-16 07:10:55.85952'])
@@ -379,7 +379,7 @@ class ParcelQueryResourceTestCase(BaseTestCase):
         self.assertEqual(response.json['parcels'], expected)
 
     @patch('service_api.resources.parcel_resource.get_parcel_by_type_and_storage',
-           new=CoroutineMock(return_value=([], '')))
+           new=CoroutineMock(return_value=[]))
     def test_get_parcel_by_type_and_storage_empty_output(self):
         request, response = self.test_client.get(self.id_not_exist_url)
 

@@ -13,7 +13,7 @@ from service_api.utils.response_utils import map_response
 
 class ClientAllResource(HTTPMethodView):
     async def get(self, request):
-        all_clients, _ = await get_all_clients()
+        all_clients = await get_all_clients()
         return json({"Clients": map_response(all_clients)})
 
     async def post(self, request):
@@ -32,7 +32,7 @@ class ClientResource(HTTPMethodView):
         if err:
             return json({'Errors': err}, status=404)
 
-        client, _ = await get_client_by_id(client_id)
+        client = await get_client_by_id(client_id)
         if client:
             return json({"Client": map_response(client)})
         return json({'msg': 'Client with id {} does not exist'.format(client_id)}, status=404)
@@ -42,7 +42,7 @@ class ClientResource(HTTPMethodView):
         if err:
             return json({'Errors': err}, status=404)
 
-        result, _ = await delete_one_client(client_id)
+        result = await delete_one_client(client_id)
         if result:
             return json({'msg': 'Successfully deleted user {}'.format(result[0]['email'])})
         return json({'msg': 'User with id {} does not exist'.format(client_id)}, status=404)
@@ -54,7 +54,7 @@ class ClientResource(HTTPMethodView):
         if err:
             return json({'Errors': err}, status=404)
 
-        result, _ = await update_client_by_id(client_data)
+        result = await update_client_by_id(client_data)
         if result:
             return json({'msg': 'User {} successfully updated'.format(result[0]['email'])})
         return json({'msg': 'User with id {} does not exist'.format(client_id)}, status=404)

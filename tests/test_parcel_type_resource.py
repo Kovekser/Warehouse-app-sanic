@@ -21,14 +21,14 @@ class ParcelTypeResourceTestCaseCase(BaseTestCase):
         cls.id_not_exist_url = f'{cls.base_url}/parceltype/f384a7d2-58a5-47f6-9f23-92b8d0d4dae8'
 
     @patch('service_api.resources.parceltype_resource.get_all_types',
-           new=CoroutineMock(return_value=([], '')))
+           new=CoroutineMock(return_value=[]))
     def test_get_all_parceltype_resource_empty_table(self):
         request, response = self.test_client.get(self.bold_url)
         self.assertEqual(response.status, 200)
         self.assertEqual(response.json, {'Types': []})
 
     @patch('service_api.resources.parceltype_resource.get_all_types',
-           new=CoroutineMock(return_value=(select_all_data, '')))
+           new=CoroutineMock(return_value=select_all_data))
     def test_get_all_parcel_types_resource_not_empty(self):
         row_keys = ("id", "type_name")
         request, response = self.test_client.get(self.bold_url)
@@ -118,7 +118,7 @@ class ParcelTypeResourceTestCaseCase(BaseTestCase):
         self.assertEqual(response.json, msg)
 
     @patch('service_api.resources.parceltype_resource.delete_one_type',
-           new=CoroutineMock(return_value=([{'type_name': 'letter'}], '')))
+           new=CoroutineMock(return_value=[{'type_name': 'letter'}]))
     def test_delete_one_parcel_type_resource_valid_id(self):
         request, response = self.test_client.delete(self.url)
         self.assertEqual(response.status, 200)
@@ -132,7 +132,7 @@ class ParcelTypeResourceTestCaseCase(BaseTestCase):
         self.assertEqual(response.json, msg)
 
     @patch('service_api.resources.parceltype_resource.delete_one_type',
-           new=CoroutineMock(return_value=([], '')))
+           new=CoroutineMock(return_value=[]))
     def test_delete_one_parcel_type_resource_id_not_exist(self):
         request, response = self.test_client.delete(self.id_not_exist_url)
         msg = {'msg': 'Parcel type with id f384a7d2-58a5-47f6-9f23-92b8d0d4dae8 does not exist'}
@@ -141,7 +141,7 @@ class ParcelTypeResourceTestCaseCase(BaseTestCase):
         self.assertEqual(response.json, msg)
 
     @patch('service_api.resources.parceltype_resource.update_type_by_id',
-           new=CoroutineMock(return_value=([{'type_name': 'important letter'}], '')))
+           new=CoroutineMock(return_value=[{'type_name': 'important letter'}]))
     def test_put_parcel_type_resource_valid(self):
         request, response = self.test_client.put(
             self.url,
@@ -160,7 +160,7 @@ class ParcelTypeResourceTestCaseCase(BaseTestCase):
         self.assertEqual(response.json, msg)
 
     @patch('service_api.resources.parceltype_resource.update_type_by_id',
-           new=CoroutineMock(return_value=([], '')))
+           new=CoroutineMock(return_value=[]))
     def test_put_parcel_type_resource_id_not_exist(self):
         request, response = self.test_client.put(self.id_not_exist_url,
                                                  json={'type_name': 'important letter'})
@@ -185,7 +185,7 @@ class ParcelTypeResourceTestCaseCase(BaseTestCase):
         self.assertEqual(response.json, msg)
 
     @patch('service_api.resources.parceltype_resource.get_type_by_id',
-           new=CoroutineMock(return_value=(one_parcel_type, '')))
+           new=CoroutineMock(return_value=one_parcel_type))
     def test_get_parcel_type_by_id_exists_resource(self):
         request, response = self.test_client.get(self.url)
         type_by_id = {
@@ -199,7 +199,7 @@ class ParcelTypeResourceTestCaseCase(BaseTestCase):
         self.assertEqual(response.json, type_by_id)
 
     @patch('service_api.resources.parceltype_resource.get_type_by_id',
-           new=CoroutineMock(return_value=([], '')))
+           new=CoroutineMock(return_value=[]))
     def test_get_parcel_type_by_id_not_exists_resource(self):
         request, response = self.test_client.get(self.id_not_exist_url)
         msg = {'msg': 'Parcel type with id f384a7d2-58a5-47f6-9f23-92b8d0d4dae8 does not exist'}

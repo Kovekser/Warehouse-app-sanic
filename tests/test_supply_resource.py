@@ -27,14 +27,14 @@ class SupplyResourceTestCaseCase(BaseTestCase):
         cls.id_not_exist_url = f'{cls.base_url}/supply/f384a7d2-58a5-47f6-9f23-92b8d0d4dae8'
 
     @patch('service_api.resources.supply_resource.get_all_supply',
-           new=CoroutineMock(return_value=([], '')))
+           new=CoroutineMock(return_value=[]))
     def test_get_all_supply_resource_empty_table(self):
         request, response = self.test_client.get(self.bold_url)
         self.assertEqual(response.status, 200)
         self.assertEqual(response.json, {"Supply": []})
 
     @patch('service_api.resources.supply_resource.get_all_supply',
-           new=CoroutineMock(return_value=(select_all_data, '')))
+           new=CoroutineMock(return_value=select_all_data))
     def test_get_all_supply_resource_not_empty(self):
 
         row_keys = ("id", "from_storage", "to_storage", "status", "client_id", "send_date", "received_date")
@@ -132,7 +132,7 @@ class SupplyResourceTestCaseCase(BaseTestCase):
         self.assertEqual(response.json, msg)
 
     @patch('service_api.resources.supply_resource.delete_one_supply',
-           new=CoroutineMock(return_value=([{'id': '3ac93c38-7114-43dd-810a-a11384be3fd8'}], '')))
+           new=CoroutineMock(return_value=[{'id': '3ac93c38-7114-43dd-810a-a11384be3fd8'}]))
     def test_delete_one_supply_resource_valid(self):
         request, response = self.test_client.delete(self.url)
         msg = {'msg': 'Successfully deleted supply 3ac93c38-7114-43dd-810a-a11384be3fd8'}
@@ -152,7 +152,7 @@ class SupplyResourceTestCaseCase(BaseTestCase):
         self.assertEqual(response.json, msg)
 
     @patch('service_api.resources.supply_resource.delete_one_supply',
-           new=CoroutineMock(return_value=([], '')))
+           new=CoroutineMock(return_value=[]))
     def test_delete_one_supply_resource_id_not_exist(self):
         request, response = self.test_client.delete(self.id_not_exist_url)
         msg = {'msg': 'Supply with id f384a7d2-58a5-47f6-9f23-92b8d0d4dae8 does not exist'}
@@ -161,7 +161,7 @@ class SupplyResourceTestCaseCase(BaseTestCase):
         self.assertEqual(response.json, msg)
 
     @patch('service_api.resources.supply_resource.update_supply_by_id',
-           new=CoroutineMock(return_value=([{'id': '3ac93c38-7114-43dd-810a-a11384be3fd8'}], '')))
+           new=CoroutineMock(return_value=[{'id': '3ac93c38-7114-43dd-810a-a11384be3fd8'}]))
     def test_put_supply_resource_valid(self):
         request, response = self.test_client.put(
             self.url,
@@ -221,7 +221,7 @@ class SupplyResourceTestCaseCase(BaseTestCase):
         self.assertEqual(response.json, msg)
 
     @patch('service_api.resources.supply_resource.update_supply_by_id',
-           new=CoroutineMock(return_value=([], '')))
+           new=CoroutineMock(return_value=[]))
     def test_put_supply_resource_id_not_exist(self):
         request, response = self.test_client.put(
             self.id_not_exist_url,
@@ -257,7 +257,7 @@ class SupplyResourceTestCaseCase(BaseTestCase):
         self.assertEqual(response.json, msg)
 
     @patch('service_api.resources.supply_resource.get_supply_by_id',
-           new=CoroutineMock(return_value=(one_supply, '')))
+           new=CoroutineMock(return_value=one_supply))
     def test_get_supply_by_id_exists_resource(self):
         request, response = self.test_client.get(self.url)
         supply_by_id = {
@@ -276,7 +276,7 @@ class SupplyResourceTestCaseCase(BaseTestCase):
         self.assertEqual(response.json, supply_by_id)
 
     @patch('service_api.resources.supply_resource.get_supply_by_id',
-           new=CoroutineMock(return_value=([], '')))
+           new=CoroutineMock(return_value=[]))
     def test_get_supply_by_id_not_exists_resource(self):
         request, response = self.test_client.get(self.id_not_exist_url)
         msg = {'msg': 'Supply with id f384a7d2-58a5-47f6-9f23-92b8d0d4dae8 does not exist'}

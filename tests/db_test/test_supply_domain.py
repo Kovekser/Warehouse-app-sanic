@@ -56,7 +56,7 @@ class SupplyDomainTestCase(BaseDomainTest):
     async def test_get_all_supply(self):
         for row in self.data.loaded_json:
             await insert_one_supply(row)
-        test_result, _ = await get_all_supply()
+        test_result = await get_all_supply()
         expected = list(self.data.loaded_json)
         for i, row in enumerate(expected):
             expected[i] = {d[0]: t(d[1]) for t, d in zip(self.types, row.items())}
@@ -65,14 +65,14 @@ class SupplyDomainTestCase(BaseDomainTest):
 
     async def test_get_supply_by_id_exists(self):
         await insert_one_supply(next(self.data.loaded_json))
-        test_result, _ = await get_supply_by_id(self.good_id)
+        test_result = await get_supply_by_id(self.good_id)
         expected = deepcopy(self.test_supply)
         expected = {d[0]: t(d[1]) for t, d in zip(self.types, expected[0].items())}
         self.assertEqual(1, len(test_result))
         self.assertEqual(test_result[0], expected)
 
     async def test_get_supply_by_id_not_exists(self):
-        test_result, _ = await get_supply_by_id(self.id_not_exist)
+        test_result = await get_supply_by_id(self.id_not_exist)
         self.assertEqual(test_result, [])
 
     async def test_get_supply_by_id_bad(self):
@@ -81,7 +81,7 @@ class SupplyDomainTestCase(BaseDomainTest):
 
     async def test_insert_one_supply(self):
         await insert_one_supply(next(self.data.loaded_json))
-        result, _ = await get_all_supply()
+        result = await get_all_supply()
         expected = deepcopy(self.test_supply)
         expected = {d[0]: t(d[1]) for t, d in zip(self.types, expected[0].items())}
         self.assertEqual(1, len(result))
@@ -90,32 +90,32 @@ class SupplyDomainTestCase(BaseDomainTest):
     async def test_delete_all_supply(self):
         for row in self.data.loaded_json:
             await insert_one_supply(row)
-        result, _ = await get_all_supply()
+        result = await get_all_supply()
         self.assertEqual(len(result), 9)
         await delete_all_supply()
-        result, _ = await get_all_supply()
+        result = await get_all_supply()
         self.assertEqual(len(result), 0)
         self.assertEqual(result, [])
 
     async def test_delete_one_supply_exist(self):
         await insert_one_supply(next(self.data.loaded_json))
-        result, _ = await get_all_supply()
+        result = await get_all_supply()
         self.assertIsInstance(result, list)
         self.assertIsInstance(result[0], dict)
-        result, _ = await delete_one_supply(self.good_id)
+        result = await delete_one_supply(self.good_id)
         expected = uuid.UUID(self.good_id)
         self.assertEqual(result[0]['id'], expected)
-        result, _ = await get_all_supply()
+        result = await get_all_supply()
         self.assertEqual(len(result), 0)
 
     async def test_delete_one_supply_not_exist(self):
-        result, _ = await delete_one_supply(self.id_not_exist)
+        result = await delete_one_supply(self.id_not_exist)
         self.assertEqual(result, [])
 
     async def test_update_supply_by_id_exist(self):
         await insert_one_supply(next(self.data.loaded_json))
-        updated_result, _ = await update_supply_by_id(self.new_supply)
-        all_supply, _ = await get_all_supply()
+        updated_result = await update_supply_by_id(self.new_supply)
+        all_supply = await get_all_supply()
         expected = deepcopy(self.new_supply)
         expected = {d[0]: t(d[1]) for t, d in zip(self.types, expected.items())}
         self.assertEqual(1, len(all_supply))

@@ -64,7 +64,7 @@ class ParcelDomainTestCase(BaseDomainTest):
     async def test_get_all_parcel(self):
         for row in self.data.loaded_json:
             await insert_one_parcel(row)
-        test_result, _ = await get_all_parcels()
+        test_result = await get_all_parcels()
         expected = list(self.data.loaded_json)
         for i, row in enumerate(expected):
             expected[i] = {d[0]: t(d[1]) for t, d in zip(self.types, row.items())}
@@ -73,14 +73,14 @@ class ParcelDomainTestCase(BaseDomainTest):
 
     async def test_get_parcel_by_id_exists(self):
         await insert_one_parcel(next(self.data.loaded_json))
-        test_result, _ = await get_parcel_by_id(self.good_id)
+        test_result = await get_parcel_by_id(self.good_id)
         expected = deepcopy(self.test_parcel)
         expected = {d[0]: t(d[1]) for t, d in zip(self.types, expected.items())}
         self.assertEqual(1, len(test_result))
         self.assertEqual(test_result[0], expected)
 
     async def test_get_parcel_by_id_not_exists(self):
-        test_result, _ = await get_parcel_by_id(self.id_not_exist)
+        test_result = await get_parcel_by_id(self.id_not_exist)
         self.assertEqual(test_result, [])
 
     async def test_get_parcel_by_id_bad(self):
@@ -89,7 +89,7 @@ class ParcelDomainTestCase(BaseDomainTest):
 
     async def test_insert_one_parcel(self):
         await insert_one_parcel(next(self.data.loaded_json))
-        result, _ = await get_all_parcels()
+        result = await get_all_parcels()
         expected = deepcopy(self.test_parcel)
         expected = {d[0]: t(d[1]) for t, d in zip(self.types, expected.items())}
         self.assertEqual(1, len(result))
@@ -98,36 +98,36 @@ class ParcelDomainTestCase(BaseDomainTest):
     async def test_delete_all_parcel(self):
         for row in self.data.loaded_json:
             await insert_one_parcel(row)
-        result, _ = await get_all_parcels()
+        result = await get_all_parcels()
         expected = list(self.data.loaded_json)
         for i, row in enumerate(expected):
             expected[i] = {d[0]: t(d[1]) for t, d in zip(self.types, row.items())}
         self.assertEqual(len(result), 7)
         await delete_all_parcel()
-        result, _ = await get_all_parcels()
+        result = await get_all_parcels()
         self.assertIsInstance(result, list)
         self.assertEqual(len(result), 0)
         self.assertEqual(result, [])
 
     async def test_delete_one_parcel_exist(self):
         await insert_one_parcel(next(self.data.loaded_json))
-        result, _ = await get_parcel_by_id(self.good_id)
+        result = await get_parcel_by_id(self.good_id)
         self.assertIsInstance(result, list)
         self.assertEqual(1, len(result))
-        result, _ = await delete_one_parcel(self.good_id)
+        result = await delete_one_parcel(self.good_id)
         expected = uuid.UUID(self.good_id)
         self.assertEqual(result[0]['id'], expected)
-        result, _ = await get_all_parcels()
+        result = await get_all_parcels()
         self.assertEqual(len(result), 0)
 
     async def test_delete_one_parcel_not_exist(self):
-        result, _ = await delete_one_parcel(self.id_not_exist)
+        result = await delete_one_parcel(self.id_not_exist)
         self.assertEqual(result, [])
 
     async def test_update_parcel_by_id_exist(self):
         await insert_one_parcel(next(self.data.loaded_json))
-        updated_result, _ = await update_parcel_by_id(self.new_parcel)
-        result, _ = await get_all_parcels()
+        updated_result = await update_parcel_by_id(self.new_parcel)
+        result = await get_all_parcels()
         expected = deepcopy(self.new_parcel)
         expected = {d[0]: t(d[1]) for t, d in zip(self.types, expected.items())}
 
@@ -139,7 +139,7 @@ class ParcelDomainTestCase(BaseDomainTest):
     async def test_get_parcel_by_type_and_storage_db_valid_data_range(self):
         for row in self.data.loaded_json:
             await insert_one_parcel(row)
-        result, _ = await get_parcel_by_type_and_storage(**self.base_test_case)
+        result = await get_parcel_by_type_and_storage(**self.base_test_case)
         self.assertIsInstance(result, list)
         self.assertEqual(len(result), 2)
 
@@ -148,7 +148,7 @@ class ParcelDomainTestCase(BaseDomainTest):
             await insert_one_parcel(row)
         test_case = dict(deepcopy(self.base_test_case), date=['2019-04-16 07:10:55.85952'])
 
-        result, _ = await get_parcel_by_type_and_storage(**test_case)
+        result = await get_parcel_by_type_and_storage(**test_case)
         self.assertIsInstance(result, list)
         self.assertEqual(len(result), 1)
         self.assertIn('parcel_id', result[0])
@@ -164,7 +164,7 @@ class ParcelDomainTestCase(BaseDomainTest):
             await insert_one_parcel(row)
         test_case = dict(deepcopy(self.base_test_case), date=None)
 
-        result, _ = await get_parcel_by_type_and_storage(**test_case)
+        result = await get_parcel_by_type_and_storage(**test_case)
         self.assertIsInstance(result, list)
         self.assertEqual(len(result), 2)
 
@@ -173,7 +173,7 @@ class ParcelDomainTestCase(BaseDomainTest):
             await insert_one_parcel(row)
         test_case = dict(deepcopy(self.base_test_case), parcel_type='dummy')
 
-        result, _ = await get_parcel_by_type_and_storage(**test_case)
+        result = await get_parcel_by_type_and_storage(**test_case)
         self.assertEqual(result, [])
 
     async def test_get_parcel_by_type_and_storage_date_not_exist(self):
@@ -181,7 +181,7 @@ class ParcelDomainTestCase(BaseDomainTest):
             await insert_one_parcel(row)
         test_case = dict(deepcopy(self.base_test_case), date=['2029-04-16 07:10:55.85952'])
 
-        result, _ = await get_parcel_by_type_and_storage(**test_case)
+        result = await get_parcel_by_type_and_storage(**test_case)
         self.assertEqual(result, [])
 
     async def test_get_parcel_by_type_and_storage_storage_not_exist(self):
@@ -189,5 +189,5 @@ class ParcelDomainTestCase(BaseDomainTest):
             await insert_one_parcel(row)
         test_case = dict(deepcopy(self.base_test_case), storage='11111111-2222-3333-4444-555555555555')
 
-        result, _ = await get_parcel_by_type_and_storage(**test_case)
+        result = await get_parcel_by_type_and_storage(**test_case)
         self.assertEqual(result, [])

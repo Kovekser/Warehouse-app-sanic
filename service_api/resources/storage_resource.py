@@ -13,7 +13,7 @@ from service_api.utils.response_utils import map_response
 
 class StorageAllResource(HTTPMethodView):
     async def get(self, request):
-        all_storage, _ = await get_all_storage()
+        all_storage = await get_all_storage()
         return json({"Storages": map_response(all_storage)})
 
     async def post(self, request):
@@ -32,7 +32,7 @@ class StorageResource(HTTPMethodView):
         if err:
             return json({'Errors': err}, status=404)
 
-        storage, _ = await get_storage_by_id(storage_id)
+        storage = await get_storage_by_id(storage_id)
         if storage:
             return json({"Storage": map_response(storage)})
         return json({'msg': 'Storage with id {} does not exist'.format(storage_id)}, status=404)
@@ -42,7 +42,7 @@ class StorageResource(HTTPMethodView):
         if err:
             return json({'Errors': err}, status=404)
 
-        result, _ = await delete_one_storage(storage_id)
+        result = await delete_one_storage(storage_id)
         if result:
             return json({'msg': 'Successfully deleted storage {}'.format(result[0]['address'])})
         return json({'msg': 'Storage with id {} does not exist'.format(storage_id)}, status=404)
@@ -54,7 +54,7 @@ class StorageResource(HTTPMethodView):
         if err:
             return json({'Errors': err}, status=404)
 
-        storage, _ = await update_storage_by_id(storage_data)
+        storage = await update_storage_by_id(storage_data)
         if storage:
             return json({'msg': 'Storage {} successfully updated'.format(storage[0]['address'])})
         return json({'msg': 'Storage with id {} does not exist'.format(storage_id)},status=404)

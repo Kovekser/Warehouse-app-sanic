@@ -7,7 +7,7 @@ async def select_statement(statement):
         async with engine.acquire() as conn:
             result_proxy = await conn.execute(statement)
             data = [dict(r) for r in result_proxy]
-            return data, result_proxy.keys()
+            return data
 
 
 async def execute_statement(statement):

@@ -16,7 +16,7 @@ from service_api.utils.response_utils import map_response
 
 class ParcelAllResource(HTTPMethodView):
     async def get(self, request):
-        all_parcel, _ = await get_all_parcels()
+        all_parcel = await get_all_parcels()
         return json({"Parcels": map_response(all_parcel)})
 
     async def post(self, request):
@@ -35,7 +35,7 @@ class ParcelResource(HTTPMethodView):
         if err:
             return json({'Errors': err}, status=404)
 
-        parcel, _ = await get_parcel_by_id(parcel_id)
+        parcel = await get_parcel_by_id(parcel_id)
         if parcel:
             return json({"Parcel": map_response(parcel)})
         return json({'msg': 'Parcel with id {} does not exist'.format(parcel_id)}, status=404)
@@ -45,7 +45,7 @@ class ParcelResource(HTTPMethodView):
         if err:
             return json({'Errors': err}, status=404)
 
-        result, _ = await delete_one_parcel(parcel_id)
+        result = await delete_one_parcel(parcel_id)
         if result:
             return json({'msg': 'Successfully deleted parcel {}'.format(result[0]['id'])})
         return json({'msg': 'Parcel with id {} does not exist'.format(parcel_id)}, status=404)
@@ -57,7 +57,7 @@ class ParcelResource(HTTPMethodView):
         if err:
             return json({'Errors': err}, status=404)
 
-        result, _ = await update_parcel_by_id(parcel_data)
+        result = await update_parcel_by_id(parcel_data)
         if result:
             return json({'msg': 'Parcel {} successfully updated'.format(result[0]['id'])})
         return json({'msg': 'Parcel with id {} does not exist'.format(parcel_id)}, status=404)
@@ -78,7 +78,7 @@ class ParcelQueryResource(HTTPMethodView):
             return json({'Errors': err}, status=404)
         date = request.args.get('date', None)
 
-        parcels, _ = await get_parcel_by_type_and_storage(parcel_type, storage_id, date)
+        parcels = await get_parcel_by_type_and_storage(parcel_type, storage_id, date)
         if parcels:
             total_cost = sum(i['cost'] for i in parcels)\
                 # if isinstance(parcels, list) else parcels['cost']
@@ -90,9 +90,10 @@ class ParcelQueryResource(HTTPMethodView):
 class ParcelReportResource(HTTPMethodView):
     async def post(self, request):
         reports_client = RESTClientRegistry.get('reports')
-        report_data, head = await get_parcel_by_type_and_storage(request.json.get('parcel_type'),
+        report_data = await get_parcel_by_type_and_storage(request.json.get('parcel_type'),
                                                                  request.json.get('storage_id'),
                                                                  request.json.get('date', None))
+        head = list(report_data[0].keys())
 
         response, status_code = await reports_client().generate_report(url_path='report', json_data={'report_type': 'parcels',
                                                                                  'headers': head,

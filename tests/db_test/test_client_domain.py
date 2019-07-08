@@ -43,7 +43,7 @@ class ClientDomainTestCase(BaseDomainTest):
     async def test_get_all_clients(self):
         for row in self.data.loaded_json:
             await insert_one_client(row)
-        test_result, _ = await get_all_clients()
+        test_result = await get_all_clients()
         for row in test_result:
             row['id'] = str(row['id'])
         self.assertEqual(len(test_result), 6)
@@ -51,13 +51,13 @@ class ClientDomainTestCase(BaseDomainTest):
 
     async def test_get_client_by_id_exists(self):
         await insert_one_client(next(self.data.loaded_json))
-        test_result, _ = await get_client_by_id(self.good_id)
+        test_result = await get_client_by_id(self.good_id)
         expected = deepcopy(self.client)
         expected[0]['id'] = uuid.UUID(expected[0]['id'])
         self.assertEqual(test_result, expected)
 
     async def test_get_client_by_id_not_exists(self):
-        test_result, _ = await get_client_by_id(self.id_not_exist)
+        test_result = await get_client_by_id(self.id_not_exist)
         self.assertEqual(test_result, [])
 
     async def test_get_client_by_id_bad(self):
@@ -66,7 +66,7 @@ class ClientDomainTestCase(BaseDomainTest):
 
     async def test_insert_one_client(self):
         await insert_one_client(next(self.data.loaded_json))
-        result, _ = await get_all_clients()
+        result = await get_all_clients()
         expected = deepcopy(self.client)
         expected[0]['id'] = uuid.UUID(expected[0]['id'])
         self.assertEqual(result, expected)
@@ -74,31 +74,31 @@ class ClientDomainTestCase(BaseDomainTest):
     async def test_delete_all_clients(self):
         for row in self.data.loaded_json:
             await insert_one_client(row)
-        result, _ = await get_all_clients()
+        result = await get_all_clients()
         self.assertEqual(len(result), 6)
         await delete_all_clients()
-        result, _ = await get_all_clients()
+        result = await get_all_clients()
         self.assertEqual(len(result), 0)
         self.assertEqual(result, [])
 
     async def test_delete_one_client_exist(self):
         await insert_one_client(next(self.data.loaded_json))
-        result, _ = await get_all_clients()
+        result = await get_all_clients()
         self.assertIsInstance(result, list)
         self.assertEqual(1, len(result))
-        result, _ = await delete_one_client(self.good_id)
+        result = await delete_one_client(self.good_id)
         self.assertEqual(result[0]['email'], "johnlara@mail.com")
-        result, _ = await get_all_clients()
+        result = await get_all_clients()
         self.assertEqual(len(result), 0)
 
     async def test_delete_one_client_not_exist(self):
-        result, _ = await delete_one_client(self.id_not_exist)
+        result = await delete_one_client(self.id_not_exist)
         self.assertEqual(result, [])
 
     async def test_update_client_by_id_exist(self):
         await insert_one_client(next(self.data.loaded_json))
-        result, _ = await update_client_by_id(self.new_client[0])
+        result = await update_client_by_id(self.new_client[0])
         self.assertEqual(result[0]['email'], "johngalt@mail.com")
-        result, _ = await get_all_clients()
+        result = await get_all_clients()
         result[0]['id'] = str(result[0]['id'])
         self.assertEqual(result, self.new_client)
