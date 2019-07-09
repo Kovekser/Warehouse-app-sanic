@@ -2,7 +2,7 @@ import psycopg2
 import asyncio
 import uuid
 from copy import deepcopy
-from decimal import Context
+from decimal import Context, Decimal
 
 from tests.db_test import BaseDomainTest
 from service_api.utils.load_json_data import get_dict_gen, load_json_data
@@ -139,16 +139,17 @@ class ParcelDomainTestCase(BaseDomainTest):
     async def test_get_parcel_by_type_and_storage_db_valid_data_range(self):
         for row in self.data.loaded_json:
             await insert_one_parcel(row)
-        result = await get_parcel_by_type_and_storage(**self.base_test_case)
+        result, total_cost = await get_parcel_by_type_and_storage(**self.base_test_case)
         self.assertIsInstance(result, list)
         self.assertEqual(len(result), 2)
+        self.assertEqual([{'total_cost': Decimal('24134')}], total_cost)
 
     async def test_get_parcel_by_type_and_storage_db_valid_data_one(self):
         for row in self.data.loaded_json:
             await insert_one_parcel(row)
         test_case = dict(deepcopy(self.base_test_case), date=['2019-04-16 07:10:55.85952'])
 
-        result = await get_parcel_by_type_and_storage(**test_case)
+        result, total_cost = await get_parcel_by_type_and_storage(**test_case)
         self.assertIsInstance(result, list)
         self.assertEqual(len(result), 1)
         self.assertIn('parcel_id', result[0])
@@ -158,36 +159,41 @@ class ParcelDomainTestCase(BaseDomainTest):
         self.assertIn('client_name', result[0])
         self.assertIn('address', result[0])
         self.assertIn('received_date', result[0])
+        self.assertEqual(Decimal('16243'), total_cost[0]['total_cost'])
 
     async def test_get_parcel_by_type_and_storage_db_date_empty(self):
         for row in self.data.loaded_json:
             await insert_one_parcel(row)
         test_case = dict(deepcopy(self.base_test_case), date=None)
 
-        result = await get_parcel_by_type_and_storage(**test_case)
+        result, total_cost = await get_parcel_by_type_and_storage(**test_case)
         self.assertIsInstance(result, list)
         self.assertEqual(len(result), 2)
+        self.assertEqual(Decimal('24134'), total_cost[0]['total_cost'])
 
     async def test_get_parcel_by_type_and_storage_type_not_exist(self):
         for row in self.data.loaded_json:
             await insert_one_parcel(row)
         test_case = dict(deepcopy(self.base_test_case), parcel_type='dummy')
 
-        result = await get_parcel_by_type_and_storage(**test_case)
+        result, total_cost = await get_parcel_by_type_and_storage(**test_case)
         self.assertEqual(result, [])
+        self.assertEqual(None, total_cost[0]['total_cost'])
 
     async def test_get_parcel_by_type_and_storage_date_not_exist(self):
         for row in self.data.loaded_json:
             await insert_one_parcel(row)
         test_case = dict(deepcopy(self.base_test_case), date=['2029-04-16 07:10:55.85952'])
 
-        result = await get_parcel_by_type_and_storage(**test_case)
+        result, total_cost = await get_parcel_by_type_and_storage(**test_case)
         self.assertEqual(result, [])
+        self.assertEqual(None, total_cost[0]['total_cost'])
 
     async def test_get_parcel_by_type_and_storage_storage_not_exist(self):
         for row in self.data.loaded_json:
             await insert_one_parcel(row)
         test_case = dict(deepcopy(self.base_test_case), storage='11111111-2222-3333-4444-555555555555')
 
-        result = await get_parcel_by_type_and_storage(**test_case)
+        result, total_cost = await get_parcel_by_type_and_storage(**test_case)
         self.assertEqual(result, [])
+        self.assertEqual(None, total_cost[0]['total_cost'])

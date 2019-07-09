@@ -1,7 +1,5 @@
-import uuid
 from sanic.views import HTTPMethodView
 from sanic.response import json
-
 
 from service_api.domain.parcel import (get_all_parcels,
                                        insert_one_parcel,
@@ -78,25 +76,22 @@ class ParcelQueryResource(HTTPMethodView):
             return json({'Errors': err}, status=404)
         date = request.args.get('date', None)
 
-        parcels = await get_parcel_by_type_and_storage(parcel_type, storage_id, date)
-        if parcels:
-            total_cost = sum(i['cost'] for i in parcels)\
-                # if isinstance(parcels, list) else parcels['cost']
+        parcels, total_cost = await get_parcel_by_type_and_storage(parcel_type, storage_id, date)
 
-            return json({'parcels': map_response(parcels), 'total_cost': total_cost}, status=200)
-        return json({'parcels': parcels, 'total_cost': 0}, status=200)
+        return json({'parcels': map_response(parcels), 'total_cost': map_response(total_cost[0])}, status=200)
 
 
 class ParcelReportResource(HTTPMethodView):
     async def post(self, request):
         reports_client = RESTClientRegistry.get('reports')
-        report_data = await get_parcel_by_type_and_storage(request.json.get('parcel_type'),
-                                                                 request.json.get('storage_id'),
-                                                                 request.json.get('date', None))
+        report_data, _ = await get_parcel_by_type_and_storage(request.json.get('parcel_type'),
+                                                              request.json.get('storage_id'),
+                                                              request.json.get('date', None))
         head = list(report_data[0].keys())
 
-        response, status_code = await reports_client().generate_report(url_path='report', json_data={'report_type': 'parcels',
-                                                                                 'headers': head,
-                                                                                 'data': map_response(report_data)})
+        response, status_code = await reports_client().generate_report(url_path='report',
+                                                                       json_data={'report_type': 'parcels',
+                                                                                  'headers': head,
+                                                                                  'data': map_response(report_data)})
         print(response, status_code)
         return json({'result': response}, status=status_code)

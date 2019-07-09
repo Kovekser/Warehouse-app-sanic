@@ -322,7 +322,7 @@ class ParcelQueryResourceTestCase(BaseTestCase):
         self.assertEqual(response.json, msg)
 
     @patch('service_api.resources.parcel_resource.get_parcel_by_type_and_storage',
-           new=CoroutineMock(return_value=valid_response_two_rows))
+           new=CoroutineMock(return_value=(valid_response_two_rows, [{'total_cost': Decimal('24134')}])))
     def test_get_parcel_by_type_and_storage_no_date(self):
         request, response = self.test_client.get(self.valid_url_no_date)
         expected = deepcopy(self.valid_response_two_rows)
@@ -336,11 +336,11 @@ class ParcelQueryResourceTestCase(BaseTestCase):
         self.assertIn('parcels', response.json)
         self.assertIn('total_cost', response.json)
         self.assertIsInstance(response.json['parcels'], list)
-        self.assertEqual(response.json['total_cost'], Decimal('24134'))
-        self.assertEqual(response.json['parcels'], expected)
+        self.assertEqual({'total_cost': Decimal('24134')}, response.json['total_cost'])
+        self.assertEqual(expected, response.json['parcels'])
 
     @patch('service_api.resources.parcel_resource.get_parcel_by_type_and_storage',
-           new=CoroutineMock(return_value=valid_response_two_rows))
+           new=CoroutineMock(return_value=(valid_response_two_rows, [{'total_cost': Decimal('24134')}])))
     def test_get_parcel_by_type_and_storage_date_range(self):
         request, response = self.test_client.get(self.valid_url_date_range)
         self.assertEqual(request.args['date'], ['2019-04-22', '2019-04-10'])
@@ -356,11 +356,11 @@ class ParcelQueryResourceTestCase(BaseTestCase):
         self.assertIn('parcels', response.json)
         self.assertIn('total_cost', response.json)
         self.assertIsInstance(response.json['parcels'], list)
-        self.assertEqual(response.json['total_cost'], Decimal('24134'))
+        self.assertEqual({'total_cost': Decimal('24134')},  response.json['total_cost'])
         self.assertEqual(response.json['parcels'], expected)
 
     @patch('service_api.resources.parcel_resource.get_parcel_by_type_and_storage',
-           new=CoroutineMock(return_value=valid_response_one_row))
+           new=CoroutineMock(return_value=(valid_response_one_row, [{'total_cost': Decimal('16243')}])))
     def test_get_parcel_by_type_and_storage_date_one(self):
         request, response = self.test_client.get(self.valid_url_one_date)
         self.assertEqual(request.args['date'], ['2019-04-16 07:10:55.85952'])
@@ -375,11 +375,11 @@ class ParcelQueryResourceTestCase(BaseTestCase):
         self.assertIn('parcels', response.json)
         self.assertIn('total_cost', response.json)
         self.assertIsInstance(response.json['parcels'], list)
-        self.assertEqual(response.json['total_cost'], Decimal('16243'))
+        self.assertEqual(response.json['total_cost'], {'total_cost': Decimal('16243')})
         self.assertEqual(response.json['parcels'], expected)
 
     @patch('service_api.resources.parcel_resource.get_parcel_by_type_and_storage',
-           new=CoroutineMock(return_value=[]))
+           new=CoroutineMock(return_value=([], [{'total_cost': 0}])))
     def test_get_parcel_by_type_and_storage_empty_output(self):
         request, response = self.test_client.get(self.id_not_exist_url)
 
@@ -387,5 +387,5 @@ class ParcelQueryResourceTestCase(BaseTestCase):
         self.assertIsInstance(response.json, dict)
         self.assertIn('parcels', response.json)
         self.assertIn('total_cost', response.json)
-        self.assertEqual(response.json['total_cost'], 0)
+        self.assertEqual(response.json['total_cost'], {'total_cost': 0})
         self.assertEqual(response.json['parcels'], [])
