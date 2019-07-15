@@ -43,7 +43,7 @@ class ParcelTypeResource(HTTPMethodView):
 
         result = await delete_one_type(type_id)
         if result:
-            return json({'msg': 'Successfully deleted parcel type {}'.format(result['type_name'])})
+            return json({'msg': 'Successfully deleted parcel type {}'.format(result[0]['type_name'])})
         return json({'msg': 'Parcel type with id {} does not exist'.format(type_id)}, status=404)
 
     async def put(self, request, type_id):
@@ -55,5 +55,5 @@ class ParcelTypeResource(HTTPMethodView):
 
         result = await update_type_by_id(type_data)
         if result:
-            return json({'msg': 'Parcel type {} successfully updated'.format(result['type_name'])})
+            return json({'msg': 'Parcel type {} successfully updated'.format(result[0]['type_name'])})
         return json({'msg': 'Parcel type with id {} does not exist'.format(type_id)}, status=404)

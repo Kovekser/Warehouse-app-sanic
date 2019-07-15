@@ -52,7 +52,10 @@ class StorageDomainTestCase(BaseDomainTest):
         test_result = await get_storage_by_id(self.good_id)
         expected = deepcopy(self.test_storage)
         expected['id'] = uuid.UUID(expected['id'])
-        self.assertEqual(test_result, expected)
+
+        self.assertIsInstance(test_result, list)
+        self.assertEqual(1, len(test_result))
+        self.assertEqual(test_result[0], expected)
 
     async def test_get_storage_by_id_not_exists(self):
         test_result = await get_storage_by_id(self.id_not_exist)
@@ -67,7 +70,10 @@ class StorageDomainTestCase(BaseDomainTest):
         result = await get_all_storage()
         expected = deepcopy(self.test_storage)
         expected['id'] = uuid.UUID(expected['id'])
-        self.assertEqual(result, expected)
+
+        self.assertIsInstance(result, list)
+        self.assertEqual(1, len(result))
+        self.assertEqual(result[0], expected)
 
     async def test_delete_all_storage(self):
         for row in self.data.loaded_json:
@@ -76,15 +82,15 @@ class StorageDomainTestCase(BaseDomainTest):
         self.assertEqual(len(result), 7)
         await delete_all_storage()
         result = await get_all_storage()
-        self.assertEqual(len(result), 0)
         self.assertEqual(result, [])
 
     async def test_delete_one_storage_exist(self):
         await insert_one_storage(next(self.data.loaded_json))
         result = await get_all_storage()
-        self.assertIsInstance(result, dict)
+        self.assertIsInstance(result, list)
+        self.assertEqual(1, len(result))
         result = await delete_one_storage(self.good_id)
-        self.assertEqual(result['address'], '197D Klochkovska str.')
+        self.assertEqual(result[0]['address'], '197D Klochkovska str.')
         result = await get_all_storage()
         self.assertEqual(len(result), 0)
 
@@ -95,8 +101,11 @@ class StorageDomainTestCase(BaseDomainTest):
     async def test_update_storage_by_id_exist(self):
         await insert_one_storage(next(self.data.loaded_json))
         result = await update_storage_by_id(self.new_storage)
-        self.assertEqual(result['address'], '222 Valentynivska str., apt. 39')
+        self.assertEqual(result[0]['address'], '222 Valentynivska str., apt. 39')
         result = await get_all_storage()
         expected = deepcopy(self.new_storage)
         expected['id'] = uuid.UUID(expected['id'])
-        self.assertEqual(result, expected)
+
+        self.assertIsInstance(result, list)
+        self.assertEqual(1, len(result))
+        self.assertEqual(result[0], expected)

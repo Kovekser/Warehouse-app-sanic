@@ -44,7 +44,7 @@ class ClientResource(HTTPMethodView):
 
         result = await delete_one_client(client_id)
         if result:
-            return json({'msg': 'Successfully deleted user {}'.format(result['email'])})
+            return json({'msg': 'Successfully deleted user {}'.format(result[0]['email'])})
         return json({'msg': 'User with id {} does not exist'.format(client_id)}, status=404)
 
     async def put(self, request, client_id):
@@ -56,5 +56,5 @@ class ClientResource(HTTPMethodView):
 
         result = await update_client_by_id(client_data)
         if result:
-            return json({'msg': 'User {} successfully updated'.format(result['email'])})
+            return json({'msg': 'User {} successfully updated'.format(result[0]['email'])})
         return json({'msg': 'User with id {} does not exist'.format(client_id)}, status=404)

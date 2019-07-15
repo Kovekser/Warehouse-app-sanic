@@ -1,6 +1,6 @@
 from service_api.models import Parcel, Clients, Storage, Supply, Parceltype
 from service_api.db import select_statement, execute_statement
-from sqlalchemy import select, and_
+from sqlalchemy import select, and_, func
 
 
 async def get_all_parcels():
@@ -40,6 +40,7 @@ async def update_parcel_by_id(data):
 
 
 async def get_parcel_by_type_and_storage(parcel_type, storage, date):
+    statement = ''
     base_statement = select([Parcel.c.id.label('parcel_id'), Parcel.c.description, Parcel.c.cost,
                              Parceltype.c.type_name, Clients.c.name.label('client_name'),
                              Storage.c.address, Supply.c.received_date]). \
@@ -49,21 +50,22 @@ async def get_parcel_by_type_and_storage(parcel_type, storage, date):
                     join(Storage, Storage.c.id == Supply.c.to_storage))
     if date:
         if len(date) == 1:
-            # date = date[0]
             statement = base_statement.where(and_
                                              (Parceltype.c.type_name == parcel_type,
                                               Supply.c.to_storage == storage,
                                               Supply.c.received_date == date[0])
-                                             )
+                                             ).alias("select_statement")
         elif len(date) == 2:
             statement = base_statement.where(and_
                                              (Parceltype.c.type_name == parcel_type,
                                               Supply.c.to_storage == storage,
                                               Supply.c.received_date.between(*sorted(date)))
-                                             )
+                                             ).alias("select_statement")
     else:
         statement = base_statement.where(and_
                                          (Parceltype.c.type_name == parcel_type,
-                                          Supply.c.to_storage == storage)
-                                         )
-    return await select_statement(statement)
+                                          Supply.c.to_storage == storage)).alias("select_statement")
+
+    sum_stmt = select([func.sum(statement.c.cost).label('total_cost')])
+
+    return await select_statement(statement), await select_statement(sum_stmt)

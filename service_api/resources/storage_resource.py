@@ -44,7 +44,7 @@ class StorageResource(HTTPMethodView):
 
         result = await delete_one_storage(storage_id)
         if result:
-            return json({'msg': 'Successfully deleted storage {}'.format(result['address'])})
+            return json({'msg': 'Successfully deleted storage {}'.format(result[0]['address'])})
         return json({'msg': 'Storage with id {} does not exist'.format(storage_id)}, status=404)
 
     async def put(self, request, storage_id):
@@ -56,5 +56,5 @@ class StorageResource(HTTPMethodView):
 
         storage = await update_storage_by_id(storage_data)
         if storage:
-            return json({'msg': 'Storage {} successfully updated'.format(storage['address'])})
+            return json({'msg': 'Storage {} successfully updated'.format(storage[0]['address'])})
         return json({'msg': 'Storage with id {} does not exist'.format(storage_id)},status=404)

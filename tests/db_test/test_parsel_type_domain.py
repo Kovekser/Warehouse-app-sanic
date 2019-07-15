@@ -49,7 +49,9 @@ class ParselTypeDomainTestCase(BaseDomainTest):
         test_result = await get_type_by_id(self.good_id)
         expected = deepcopy(self.test_type)
         expected['id'] = uuid.UUID(expected['id'])
-        self.assertEqual(test_result, expected)
+        self.assertIsInstance(test_result, list)
+        self.assertEqual(1, len(test_result))
+        self.assertEqual(test_result[0], expected)
 
     async def test_get_type_by_id_not_exists(self):
         test_result = await get_type_by_id(self.id_not_exist)
@@ -64,7 +66,9 @@ class ParselTypeDomainTestCase(BaseDomainTest):
         result = await get_all_types()
         expected = deepcopy(self.test_type)
         expected['id'] = uuid.UUID(expected['id'])
-        self.assertEqual(result, expected)
+        self.assertIsInstance(result, list)
+        self.assertEqual(1, len(result))
+        self.assertEqual(result[0], expected)
 
     async def test_delete_all_types(self):
         for row in self.data.loaded_json:
@@ -77,11 +81,12 @@ class ParselTypeDomainTestCase(BaseDomainTest):
         self.assertEqual(result, [])
 
     async def test_delete_one_type_exist(self):
-        await insert_one_type(next(self.data.loaded_json))
+        await insert_one_type(self.test_type)
         result = await get_all_types()
-        self.assertIsInstance(result, dict)
+        self.assertIsInstance(result, list)
+        self.assertEqual(1, len(result))
         result = await delete_one_type(self.good_id)
-        self.assertEqual(result['type_name'], 'documents')
+        self.assertEqual(result[0]['type_name'], 'documents')
         result = await get_all_types()
         self.assertEqual(len(result), 0)
 
@@ -90,10 +95,10 @@ class ParselTypeDomainTestCase(BaseDomainTest):
         self.assertEqual(result, [])
 
     async def test_update_type_by_id_exist(self):
-        await insert_one_type(next(self.data.loaded_json))
+        await insert_one_type(self.test_type)
         result = await update_type_by_id(self.new_type)
-        self.assertEqual(result['type_name'], 'very important documents')
+        self.assertEqual(result[0]['type_name'], 'very important documents')
         result = await get_all_types()
         expected = deepcopy(self.new_type)
         expected['id'] = uuid.UUID(expected['id'])
-        self.assertEqual(result, expected)
+        self.assertEqual(result[0], expected)
