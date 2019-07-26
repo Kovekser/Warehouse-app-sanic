@@ -28,7 +28,7 @@ class InitDB:
             os.path.join(script_dir, "../../migrations/jdbcdrivers/postgresql-42.2.5.jar"),
             os.path.join(script_dir, "../../migrations/changelog.xml"),
             "jdbc:postgresql://localhost/test_db",
-            'postgres',
+            'admin',
             'admin',
             "migrate"
         )

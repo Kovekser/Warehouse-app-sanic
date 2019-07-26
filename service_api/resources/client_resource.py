@@ -18,11 +18,12 @@ class ClientAllResource(HTTPMethodView):
 
     async def post(self, request):
         json_input = request.json
-        client_data, err = ClientSchema().load(json_input)
-        if err:
-            return json({'Errors': err}, status=404)
+        for client in json_input:
+            client_data, err = ClientSchema().load(client)
+            if err:
+                return json({'Errors': err}, status=404)
 
-        await insert_one_client(client_data)
+            await insert_one_client(client_data)
         return json({'msg': 'Successfully created user'})
 
 
