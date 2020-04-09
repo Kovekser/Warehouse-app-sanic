@@ -4,7 +4,7 @@ from sanic.server import HttpProtocol
 from aiopg.sa import create_engine
 
 from service_api.application import app
-from service_api.constants import BASIC_DB_CONFIG, get_port, get_host
+from service_api.constants import BASIC_DB_CONFIG, get_port, get_pg_host
 
 
 def runserver():
@@ -34,24 +34,24 @@ class InitDB:
                         await conn.execute("CREATE ROLE admin WITH LOGIN ENCRYPTED PASSWORD 'admin';")
                     await conn.execute("CREATE DATABASE {} WITH OWNER = admin;".format(self.db_name))
 
-                # Automatic migration
-                script_dir = os.path.dirname(__file__)
-                LIQUIBASE_COMMAND = """
-                                {} {} --driver={} --classpath={} --changeLogFile={} --url={} --username={} --password={} --logLevel=info {}
-                            """
-                liquibase_command = LIQUIBASE_COMMAND.format(
-                    'sudo' if get_host()=='localhost' else '',
-                    os.path.join(script_dir, "./migrations/liquibase"),
-                    "org.postgresql.Driver",
-                    os.path.join(script_dir, "./migrations/jdbcdrivers/postgresql-42.2.5.jar"),
-                    os.path.join(script_dir, "./migrations/changelog.xml"),
-                    f"jdbc:postgresql://{get_host()}/{self.db_name}",
-                    'admin',
-                    'admin',
-                    "migrate"
-                )
-                print(liquibase_command)
-                os.system(liquibase_command)
+                    # Automatic migration
+                    script_dir = os.path.dirname(__file__)
+                    LIQUIBASE_COMMAND = """
+                                    {} {} --driver={} --classpath={} --changeLogFile={} --url={} --username={} --password={} --logLevel=info {}
+                                """
+                    liquibase_command = LIQUIBASE_COMMAND.format(
+                        'sudo' if get_pg_host() == 'localhost' else '',
+                        os.path.join(script_dir, "./migrations/liquibase"),
+                        "org.postgresql.Driver",
+                        os.path.join(script_dir, "./migrations/jdbcdrivers/postgresql-42.2.5.jar"),
+                        os.path.join(script_dir, "./migrations/changelog.xml"),
+                        f"jdbc:postgresql://{get_pg_host()}/{self.db_name}",
+                        'admin',
+                        'admin',
+                        "migrate"
+                    )
+                    print(liquibase_command)
+                    os.system(liquibase_command)
 
     async def remove_test_db(self):
         async with create_engine(**BASIC_DB_CONFIG) as engine:

@@ -22,5 +22,25 @@ services:
       SANIC_ENV: development
       DOCK_ENV: 'True'
     restart: always
+  rabbitmq:
+    image: rabbitmq:latest
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=686314
+      - RABBITMQ_DEFAULT_VHOST=my_vhost
+  web_reports:
+    image: kovekser/whreports:1.0
+    ports:
+      - "4001:8001"
+    volumes:
+      - .:/app2
+    depends_on:
+      - mydb
+      - web
+      - rabbitmq
+    environment:
+      SANIC_ENV: development
+      DOCK_ENV: 'True'
+    restart: always
 volumes:
   mydb_data:

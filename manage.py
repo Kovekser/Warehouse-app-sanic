@@ -1,6 +1,5 @@
 import argparse
 import sys
-import socket
 import asyncio
 
 from commands import runserver, InitDB
