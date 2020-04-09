@@ -1,32 +1,44 @@
 [
   {
+    "id": "0148bc1a-90c7-451b-aecc-7081e0f4b60a",
     "address": "197D Klochkovska str.",
     "max_weight": 1000,
     "max_capacity": 30000
   },
   {
+    "id": "b7f8b16e-5dcb-46e0-aadf-e6db4ead822c",
     "address": "1 Akademyka proskury str.",
     "max_weight": 30,
     "max_capacity": 1000
   },
   {
+    "id": "28a8e222-bd32-489a-b5ef-4370b9032c45",
     "address": "16 Envera Akhsrova str.",
     "max_weight": 10,
     "max_capacity": 500
   },
   {
-    "address": "76 Matiushenko str.",
+    "id": "6ca6522b-6a3d-48c4-8902-b1b28896aefe",
+    "address": "70 Matiushenko str.",
     "max_weight": 30,
     "max_capacity": 1500
   },
   {
+    "id": "5782c996-d0d0-4e4f-895e-e4a98f26c65f",
     "address": "76 Matiushenko str.",
     "max_weight": 10,
     "max_capacity": 400
   },
   {
+    "id": "fc6efd2d-86cb-4932-9acb-1ce97f8bb468",
     "address": "56 Poltavskyy shliakh str.",
     "max_weight": 1000,
     "max_capacity": 40000
+  },
+  {
+    "id": "9147bf13-7a58-4d36-af58-c04852ed60d4",
+    "address": "50 Poltavskyy shliakh str.",
+    "max_weight": 1000,
+    "max_capacity": 20000
   }
 ]

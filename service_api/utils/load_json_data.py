@@ -43,6 +43,8 @@ def get_dict_gen(files):
 
 
 def load_fixtures(cmd_args):
+    tables = ('Clients', 'Parceltype', 'Storage', 'Supply', 'Parcel')
     file_list = get_file_list(cmd_args)
     data = get_dict_gen(file_list)
-    run_loop(load_json_data, data)
+    data_sorted = {table:data[table] for table in tables if table in data}
+    run_loop(load_json_data, data_sorted)

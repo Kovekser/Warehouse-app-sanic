@@ -1,8 +1,11 @@
 import argparse
 import sys
+import socket
+import asyncio
 
-from commands import runserver
+from commands import runserver, InitDB
 from service_api.utils.load_json_data import load_fixtures
+from service_api.constants import DEFAULT_SERVICE_NAME
 
 
 def parse_args(args):
@@ -17,6 +20,9 @@ def parse_args(args):
 
 
 def main(args=None):
+    my_loop = asyncio.get_event_loop()
+    my_loop.run_until_complete(InitDB(DEFAULT_SERVICE_NAME).create_db())
+
     parsed_args = parse_args(args or sys.argv[1:])
 
     if parsed_args.command == "load_json":

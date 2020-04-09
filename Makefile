@@ -17,7 +17,7 @@ liq_migrate:
 	--driver=org.postgresql.Driver \
 	--classpath=./migrations/jdbcdrivers/postgresql-42.2.5.jar \
 	--username=admin \
-	--password=686314 \
+	--password=admin \
 	--changeLogFile=/migrations/changelog.xml migrate
 
 

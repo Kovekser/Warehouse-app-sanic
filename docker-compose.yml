@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  mydb:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+    container_name: "my_postgres"
+    volumes:
+      - mydb_data:/var/lib/postgresql/data
+  web:
+    build: .
+    ports:
+      - "4000:8000"
+    volumes:
+      - .:/app
+    depends_on:
+      - mydb
+    environment:
+      SANIC_ENV: development
+      DOCK_ENV: 'True'
+    restart: always
+volumes:
+  mydb_data:
