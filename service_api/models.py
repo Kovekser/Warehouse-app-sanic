@@ -65,5 +65,9 @@ Parcel = Table(
     Column('supply_id', UUID(as_uuid=True), ForeignKey('supply.id', ondelete="CASCADE"))
 )
 
+Kafka_test = Table('kafka_test', metadata,
+                   Column('id', UUID(as_uuid=True), primary_key=True, default=uuid.uuid4),
+                   Column('number', Integer, nullable=False))
+
 models = (Parcel, Supply, Storage, Parceltype, Clients)
 

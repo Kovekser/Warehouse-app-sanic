@@ -13,4 +13,4 @@ async def select_statement(statement):
 async def execute_statement(statement):
     async with create_engine(**DB_CONFIG) as engine:
         async with engine.acquire() as conn:
-            await conn.execute(statement)
+

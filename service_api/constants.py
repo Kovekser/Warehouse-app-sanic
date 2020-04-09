@@ -3,7 +3,7 @@ import sys
 import json
 
 
-def get_host():
+def get_pg_host():
     if os.getenv('DOCK_ENV'):
         return 'mydb'
     return 'localhost'
@@ -19,14 +19,14 @@ def get_port(app_name):
 
 if 'test' in str(sys.argv[0]):
     DB_CONFIG = {
-        'host': get_host(),
+        'host': get_pg_host(),
         'user': 'admin',
         'password': 'admin',
         'database': 'test_db'
     }
 else:
     DB_CONFIG = {
-        'host': get_host(),
+        'host': get_pg_host(),
         'user': 'admin',
         'password': 'admin',
         'database': 'warehouse'
@@ -34,7 +34,7 @@ else:
 
 
 BASIC_DB_CONFIG = {
-    'host': get_host(),
+    'host': get_pg_host(),
     'user': 'postgres',
     'password': 'admin',
     'database': 'postgres'
